@@ -5,6 +5,8 @@
 Preview markdown files in a separate window. Markdown is formatted exactly the
 same as on GitHub.
 
+![screenshot](./screenshot.png)
+
 ## Installation
 ```bash
 $ npm install -g vmd
@@ -14,6 +16,9 @@ $ npm install -g vmd
 ```sh
 $ vmd README.md
 ```
+
+## Todo (PR's are welcome!)
+- autoreload
 
 ## License
 [MIT](https://tldrlegal.com/license/mit-license)
