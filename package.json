@@ -1,0 +1,27 @@
+{
+  "name": "vmd",
+  "version": "1.0.0",
+  "description": "vmd",
+  "main": "index.js",
+  "scripts": {
+  },
+  "bin": {
+    "vmd": "./cli.js"
+  },
+  "repository": "yoshuawuyts/vmd",
+  "keywords": [
+    "markdown",
+    "browser",
+    "standalone",
+    "preview",
+    "github"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "atom-shell": "^0.21.2",
+    "github-markdown-css": "^2.0.3",
+    "marked": "^0.3.3"
+  },
+  "devDependencies": {
+  }
+}

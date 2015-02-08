@@ -1,0 +1,42 @@
+{
+  "env": {
+    "node": true
+  },
+  "rules": {
+    // warnings
+    "no-unused-expressions": 1,
+    "no-warning-comments": 1,
+    "no-native-reassign": 1,
+    "no-invalid-regexp": 1,
+    "no-debugger": 1,
+    "no-console": 1,
+    "no-empty": 1,
+    "radix": 1,
+
+    // errors
+    "no-shadow-restricted-names": 2,
+    "handle-callback-err": 2,
+    "no-self-compare": 2,
+    "no-empty-class": 2,
+    "no-unused-vars": 2,
+    "no-dupe-keys": 2,
+    "valid-typeof": 2,
+    "no-undef": 2,
+
+    // stylistic errors
+    "quotes": [2, "single", "avoid-escape"],
+    "no-space-before-semi": 2,
+    "no-spaced-func": 2,
+    "yoda": "always",
+    "new-cap": 2,
+
+    // mute
+    "no-use-before-define": 0,
+    "no-multi-spaces": 0,
+    "eol-last": 0,
+    "strict": 0,
+    "eqeqeq": 0,
+    "curly": 0,
+    "semi": 0
+  }
+}
