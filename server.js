@@ -3,6 +3,7 @@ const assert = require('assert')
 const app = require('app')
 const ipc = require('ipc')
 const fs = require('fs')
+const path = require('path')
 
 require('crash-reporter').start()
 
@@ -10,6 +11,8 @@ const mainWindow = null
 
 const filePath = process.argv[2]
 assert(filePath, 'no file path specified')
+
+global.baseUrl = path.dirname(filePath) + '/'
 
 // Quit when all windows are closed.
 app.on('window-all-closed', function () {
