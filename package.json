@@ -2,7 +2,7 @@
   "name": "vmd",
   "version": "1.0.2",
   "description": "vmd",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {},
   "bin": {
     "vmd": "./cli.js"
