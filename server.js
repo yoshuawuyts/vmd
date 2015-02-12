@@ -12,7 +12,7 @@ const mainWindow = null
 const filePath = process.argv[2]
 assert(filePath, 'no file path specified')
 
-global.baseUrl = path.dirname(filePath) + '/'
+global.baseUrl = path.relative(__dirname, path.resolve(path.dirname(filePath))) + '/'
 
 // Quit when all windows are closed.
 app.on('window-all-closed', function () {
