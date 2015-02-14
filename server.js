@@ -13,7 +13,8 @@ const mainWindow = null
 const filePath = process.argv[2]
 assert(filePath, 'no file path specified')
 
-global.baseUrl = path.relative(__dirname, path.resolve(path.dirname(filePath))) + '/'
+global.baseUrl = path.relative(__dirname, path.resolve(path.dirname(filePath)));
+if (global.baseUrl) { global.baseUrl += '/'; }
 
 const watcher = chokidar.watch(filePath, {
   usePolling: true
@@ -31,6 +32,7 @@ app.on('ready', function () {
   window.on('closed', function () {
     mainWindow = null
   })
+  window.openDevTools();
 
   watcher.on('change', sendMarkdown)
 
