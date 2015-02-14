@@ -28,6 +28,7 @@ app.on('window-all-closed', function () {
 app.on('ready', function () {
   window = new BrowserWindow({
     title: path.basename(filePath) + ' - vmd',
+    icon: path.join(__dirname, 'resources/vmd.png'),
     width: 800,
     height: 600
   })
