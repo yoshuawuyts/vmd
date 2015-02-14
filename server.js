@@ -32,7 +32,6 @@ app.on('ready', function () {
   window.on('closed', function () {
     mainWindow = null
   })
-  window.openDevTools();
 
   watcher.on('change', sendMarkdown)
 
