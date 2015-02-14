@@ -4,6 +4,7 @@ const app = require('app')
 const ipc = require('ipc')
 const fs = require('fs')
 const path = require('path')
+const chokidar = require('chokidar')
 
 require('crash-reporter').start()
 
@@ -14,6 +15,10 @@ assert(filePath, 'no file path specified')
 
 global.baseUrl = path.relative(__dirname, path.resolve(path.dirname(filePath))) + '/'
 
+const watcher = chokidar.watch(filePath, {
+  usePolling: true
+})
+
 // Quit when all windows are closed.
 app.on('window-all-closed', function () {
   if (process.platform !== 'darwin') app.quit()
@@ -22,11 +27,15 @@ app.on('window-all-closed', function () {
 app.on('ready', function () {
   window = new BrowserWindow({ width: 800, height: 600 })
   window.loadUrl('file://' + __dirname + '/index.html')
-  window.webContents.on('did-finish-load', function () {
-    var file = fs.readFileSync(filePath, { encoding: 'utf8' })
-    window.webContents.send('md', file)
-  })
+  window.webContents.on('did-finish-load', sendMarkdown)
   window.on('closed', function () {
     mainWindow = null
   })
+
+  watcher.on('change', sendMarkdown)
+
+  function sendMarkdown () {
+      var file = fs.readFileSync(filePath, { encoding: 'utf8' })
+      window.webContents.send('md', file)
+  }
 })
