@@ -26,7 +26,12 @@ app.on('window-all-closed', function () {
 })
 
 app.on('ready', function () {
-  window = new BrowserWindow({ width: 800, height: 600 })
+  window = new BrowserWindow({
+    title: path.basename(filePath) + ' - vmd',
+    width: 800,
+    height: 600
+  })
+
   window.loadUrl('file://' + __dirname + '/index.html')
   window.webContents.on('did-finish-load', sendMarkdown)
   window.on('closed', function () {
