@@ -10,7 +10,7 @@ ipc.on('md', function (raw) {
   body.innerHTML = md
 })
 
-document.addEventListener('keydown', function (ev) {
+window.addEventListener('keydown', function (ev) {
   if (ev.keyCode === 27) {
     remote.getCurrentWindow().close()
   }
