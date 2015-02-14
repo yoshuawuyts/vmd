@@ -17,9 +17,6 @@ $ npm install -g vmd
 $ vmd README.md
 ```
 
-## Todo (PR's are welcome!)
-- autoreload
-
 ## License
 [MIT](https://tldrlegal.com/license/mit-license)
 
