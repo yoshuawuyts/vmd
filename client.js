@@ -9,3 +9,9 @@ ipc.on('md', function (raw) {
   base.setAttribute('href', remote.getGlobal('baseUrl'))
   body.innerHTML = md
 })
+
+document.addEventListener('keydown', function (ev) {
+  if (ev.keyCode === 27) {
+    remote.getCurrentWindow().close()
+  }
+});
