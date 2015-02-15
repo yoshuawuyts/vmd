@@ -1,6 +1,13 @@
 const marked = require('marked')
+const highlightjs = require('highlight.js')
 const ipc = require('ipc')
 const remote = require('remote')
+
+marked.setOptions({
+  highlight: function (code) {
+    return highlightjs.highlightAuto(code).value
+  }
+})
 
 ipc.on('md', function (raw) {
   const md = marked(raw)
