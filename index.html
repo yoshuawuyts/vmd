@@ -13,6 +13,20 @@
       overflow-y: auto!important;
     }
 
+    a:hover::before {
+      display: inline-block;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      padding: 2px 4px;
+      border-top-right-radius: 2px;
+      background-color: rgb(62, 62, 62);
+      font-size: 90%;
+      line-height: 100%;
+      color: rgb(250, 250, 250);
+      content: attr(href);
+    }
+
     .markdown-body {
       min-width: 200px;
       max-width: 790px;
