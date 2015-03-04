@@ -1,24 +1,21 @@
+/*global window:true*/
 const BrowserWindow = require('browser-window')
-const assert = require('assert')
-const app = require('app')
-const ipc = require('ipc')
-const fs = require('fs')
-const path = require('path')
+const crashReporter = require('crash-reporter')
 const chokidar = require('chokidar')
+const assert = require('assert')
+const path = require('path')
+const app = require('app')
+const fs = require('fs')
 
-require('crash-reporter').start()
-
-const mainWindow = null
+crashReporter.start()
 
 const filePath = process.argv[2]
 assert(filePath, 'no file path specified')
 
-global.baseUrl = path.relative(__dirname, path.resolve(path.dirname(filePath)));
-if (global.baseUrl) { global.baseUrl += '/'; }
+global.baseUrl = path.relative(__dirname, path.resolve(path.dirname(filePath)))
+if (global.baseUrl) global.baseUrl += '/'
 
-const watcher = chokidar.watch(filePath, {
-  usePolling: true
-})
+const watcher = chokidar.watch(filePath, { usePolling: true })
 
 // Quit when all windows are closed.
 app.on('window-all-closed', function () {
@@ -35,14 +32,11 @@ app.on('ready', function () {
 
   window.loadUrl('file://' + __dirname + '/index.html')
   window.webContents.on('did-finish-load', sendMarkdown)
-  window.on('closed', function () {
-    mainWindow = null
-  })
 
   watcher.on('change', sendMarkdown)
 
   function sendMarkdown () {
-      var file = fs.readFileSync(filePath, { encoding: 'utf8' })
-      window.webContents.send('md', file)
+    var file = fs.readFileSync(filePath, { encoding: 'utf8' })
+    window.webContents.send('md', file)
   }
 })
