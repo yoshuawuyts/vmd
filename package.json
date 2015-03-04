@@ -3,9 +3,11 @@
   "version": "1.4.0",
   "description": "vmd",
   "main": "server.js",
-  "scripts": {},
+  "scripts": {
+    "test": "standard"
+  },
   "bin": {
-    "vmd": "./cli.js"
+    "vmd": "./bin/cli.js"
   },
   "repository": "yoshuawuyts/vmd",
   "keywords": [
@@ -23,5 +25,7 @@
     "highlight.js": "^8.4.0",
     "marked": "^0.3.3"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "standard": "^2.10.0"
+  }
 }
