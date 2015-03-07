@@ -1,5 +1,6 @@
 # vmd
 [![NPM version][npm-image]][npm-url]
+[![build status][travis-image]][travis-url]
 [![Downloads][downloads-image]][downloads-url]
 [![js-standard-style][standard-image]][standard-url]
 
@@ -23,7 +24,9 @@ $ vmd README.md
 
 [npm-image]: https://img.shields.io/npm/v/vmd.svg?style=flat-square
 [npm-url]: https://npmjs.org/package/vmd
+[travis-image]: https://img.shields.io/travis/yoshuawuyts/vmd.svg?style=flat-square
+[travis-url]: https://travis-ci.org/yoshuawuyts/vmd
 [downloads-image]: http://img.shields.io/npm/dm/vmd.svg?style=flat-square
 [downloads-url]: https://npmjs.org/package/vmd
-[standard-image]: https://img.shields.io/badge/code%20style-standard-green.svg?style=flat-square
+[standard-image]: https://img.shields.io/badge/code%20style-standard-brightgreen.svg?style=flat-square
 [standard-url]: https://github.com/feross/standard
