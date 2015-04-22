@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 const proc = require('child_process')
-const atom = require('atom-shell')
+const electron = require('electron-prebuilt')
 const path = require('path')
 const fs = require('fs')
 
@@ -17,5 +17,5 @@ if (!fs.existsSync(path.resolve(md))) {
   process.exit(1)
 }
 
-// spawn atom-shell
-proc.spawn(atom, [serverPath, md])
+// spawn electron
+proc.spawn(electron, [serverPath, md])
