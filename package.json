@@ -4,6 +4,11 @@
   "description": "vmd",
   "main": "server.js",
   "scripts": {
+    "build": "npm run clean && npm run build-darwin",
+    "build-darwin": "electron-packager . vmd --platform=darwin --arch=x64 --version=0.26.1",
+    "build-linux": "electron-packager . vmd --platform=linux --arch=x64 --version=0.26.1",
+    "clean": "rm -rf *.app && rm -rf *-linux",
+    "publish": "publish-release --template notes.md --assets vmd.zip",
     "test": "standard"
   },
   "bin": {
@@ -19,13 +24,15 @@
   ],
   "license": "MIT",
   "dependencies": {
-    "electron-prebuilt": "^0.24.0",
     "chokidar": "^1.0.0-rc3",
+    "electron-prebuilt": "^0.26.1",
     "github-markdown-css": "^2.0.3",
     "highlight.js": "^8.4.0",
     "marked": "^0.3.3"
   },
   "devDependencies": {
+    "electron-packager": "^4.1.1",
+    "publish-release": "^1.0.2",
     "standard": "^2.10.0"
   }
 }
