@@ -9,6 +9,7 @@
     "build-linux": "electron-packager . vmd --platform=linux --arch=x64 --version=0.26.1",
     "clean": "rm -rf *.app && rm -rf *-linux",
     "publish": "publish-release --template notes.md --assets vmd.zip",
+    "start": "electron . README.md",
     "test": "standard"
   },
   "bin": {

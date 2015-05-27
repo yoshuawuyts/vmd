@@ -10,7 +10,10 @@ const fs = require('fs')
 crashReporter.start()
 
 const filePath = process.argv[2]
-assert(filePath, 'no file path specified')
+if (!filePath) {
+  console.log('no file path specified')
+  process.exit(1)
+}
 
 global.baseUrl = path.relative(__dirname, path.resolve(path.dirname(filePath)))
 if (global.baseUrl) global.baseUrl += '/'
