@@ -36,7 +36,7 @@ $ npm view browserify readme | vmd
 
 [npm-image]: https://img.shields.io/npm/v/vmd.svg?style=flat-square
 [npm-url]: https://npmjs.org/package/vmd
-[travis-image]: https://img.shields.io/travis/yoshuawuyts/vmd.svg?style=flat-square
+[travis-image]: https://img.shields.io/travis/yoshuawuyts/vmd/master.svg?style=flat-square
 [travis-url]: https://travis-ci.org/yoshuawuyts/vmd
 [downloads-image]: http://img.shields.io/npm/dm/vmd.svg?style=flat-square
 [downloads-url]: https://npmjs.org/package/vmd
