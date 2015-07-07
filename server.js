@@ -24,7 +24,7 @@ const resolved = fromFile ? path.resolve(path.dirname(filePath)) : process.cwd()
 global.baseUrl = path.relative(__dirname, resolved)
 if (global.baseUrl) global.baseUrl += '/'
 
-var watcher 
+var watcher
 if (fromFile) {
   watcher = chokidar.watch(filePath, { usePolling: true })
 }
