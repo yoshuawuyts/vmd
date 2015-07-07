@@ -4,8 +4,8 @@ const remote = require('remote')
 const ipc = require('ipc')
 
 marked.setOptions({
-  highlight: function (code) {
-    return highlightjs.highlightAuto(code).value
+  highlight: function (code, lang) {
+    return highlightjs.highlightAuto(code, [ lang ]).value
   }
 })
 
