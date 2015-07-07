@@ -19,6 +19,18 @@ $ npm install -g vmd
 $ vmd README.md
 ```
 
+You can also pipe markdown content into `stdin`:
+
+```sh
+$ cat README.md | vmd
+```
+
+For example, you can see the markdown for [browserify](https://github.com/substack/node-browserify) like so:
+
+```sh
+$ npm view browserify readme | vmd
+```
+
 ## License
 [MIT](https://tldrlegal.com/license/mit-license)
 
