@@ -14,12 +14,15 @@ if (md) {
     process.exit(1)
   }
   args.push(md)
+} else if (process.stdin.isTTY) {
+  console.error('No file path specified')
+  process.exit(1)
 }
 
 // spawn electron
 var proc = spawn(electron, args)
 
-// pipe stdin into child process
+// pipe stdin into child process, if something was piped in
 if (!md) {
   process.stdin.pipe(proc.stdin)
 }
