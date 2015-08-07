@@ -9,10 +9,20 @@ const md = process.argv[2]
 var args = [serverPath]
 
 if (md) {
-  if (!fs.existsSync(path.resolve(md))) {
-    console.error('Cannot access ', md + ': No such file')
+  var stat
+
+  try {
+    stat = fs.statSync(path.resolve(md))
+  } catch (e) {
+    console.error('Cannot open', md + ':', e.code === 'ENOENT' ? 'no such file' : e.message)
     process.exit(1)
   }
+
+  if (stat.isDirectory()) {
+    console.error('Cannot open', md + ': is a directory')
+    process.exit(1)
+  }
+
   args.push(md)
 } else if (process.stdin.isTTY) {
   console.error('No file path specified')
