@@ -24,7 +24,7 @@ window.addEventListener('keydown', function (ev) {
 // menu
 var vmdSubmenu = [
   { label: 'Quit', accelerator: 'CmdOrCtrl+Q', click: function () { remote.require('app').quit() } }
-];
+]
 
 if (process.platform === 'darwin') {
   vmdSubmenu = [
