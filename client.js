@@ -22,20 +22,21 @@ window.addEventListener('keydown', function (ev) {
 })
 
 // menu
+var vmdSubmenu = [
+  { label: 'Quit', accelerator: 'CmdOrCtrl+Q', click: function () { remote.require('app').quit() } }
+]
+
+if (process.platform === 'darwin') {
+  vmdSubmenu = [
+    { label: 'About vmd', selector: 'orderFrontStandardAboutPanel:' },
+    { type: 'separator' }
+  ].concat(vmdSubmenu)
+}
+
 var template = [
   {
     label: 'vmd',
-    submenu: [
-      { label: 'About vmd', selector: 'orderFrontStandardAboutPanel:' },
-      { type: 'separator' },
-      { label: 'Services', submenu: [] },
-      { type: 'separator' },
-      { label: 'Hide vmd', accelerator: 'CmdOrCtrl+H', selector: 'hide:' },
-      { label: 'Hide Others', accelerator: 'CmdOrCtrl+Shift+H', selector: 'hideOtherApplications:' },
-      { label: 'Show All', selector: 'unhideAllApplications:' },
-      { type: 'separator' },
-      { label: 'Quit', accelerator: 'CmdOrCtrl+Q', click: function () { remote.require('app').quit() } }
-    ]
+    submenu: vmdSubmenu
   },
   { label: 'File',
     submenu: [
