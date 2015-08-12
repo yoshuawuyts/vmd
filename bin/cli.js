@@ -5,7 +5,7 @@ const path = require('path')
 const fs = require('fs')
 
 const serverPath = path.join(__dirname, '../server.js')
-const md = process.argv[2]
+const md = process.argv[2] || (process.stdin.isTTY ? 'README.md' : null)
 var args = [serverPath]
 
 if (md) {
