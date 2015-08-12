@@ -16,7 +16,13 @@ $ npm install -g vmd
 
 ## Usage
 ```sh
-$ vmd README.md
+$ vmd DOCUMENT.md
+```
+
+When no path to a document is supplied, "README.md" will be opened by default.
+
+```sh
+$ vmd
 ```
 
 You can also pipe markdown content into `stdin`:
