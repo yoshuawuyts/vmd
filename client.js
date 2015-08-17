@@ -21,7 +21,7 @@ window.addEventListener('keydown', function (ev) {
   if (ev.keyCode === 27) remote.getCurrentWindow().close()
 })
 
-var zoom = require('./zoom')();
+var zoom = require('./zoom')()
 
 // menu
 var vmdSubmenu = [
@@ -49,9 +49,9 @@ var template = [
   {
     label: 'View',
     submenu: [
-      { label: 'Zoom In', accelerator: 'CmdOrCtrl+Plus', click: function () { zoom.zoomIn(); } },
-      { label: 'Zoom Out', accelerator: 'CmdOrCtrl+-', click: function () { zoom.zoomOut(); } },
-      { label: 'Reset Zoom', accelerator: 'CmdOrCtrl+0', click: function () { zoom.reset(); } }
+      { label: 'Zoom In', accelerator: 'CmdOrCtrl+Plus', click: function () { zoom.zoomIn() } },
+      { label: 'Zoom Out', accelerator: 'CmdOrCtrl+-', click: function () { zoom.zoomOut() } },
+      { label: 'Reset Zoom', accelerator: 'CmdOrCtrl+0', click: function () { zoom.reset() } }
     ]
   }
 ]
