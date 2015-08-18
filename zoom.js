@@ -1,5 +1,11 @@
 var zoom = {
-  init: function () {
+  init: function (zoom) {
+    if (zoom) {
+      this.currentZoom = +zoom
+      this.update()
+      return this
+    }
+
     this.currentZoom = +window.getComputedStyle(document.body).getPropertyValue('zoom')
     return this
   },
