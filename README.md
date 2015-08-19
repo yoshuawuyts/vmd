@@ -37,6 +37,29 @@ For example, you can see the markdown for [browserify](https://github.com/substa
 $ npm view browserify readme | vmd
 ```
 
+## Configuration
+
+If you wish to change some of the default settings create a config file called
+`.vmdrc` in your home directory or in `~/.config/vmd`.
+
+Here's a sample config file (shows the default values):
+
+```ini
+zoom = 1.0
+document = README.md
+```
+
+ - `zoom` is the zoom factor. If you prefer the text in vmd to be bigger you
+   can change this to a higher value, like 1.25.
+
+ - `document` is the default document name. This is the file that vmd will try
+   to open if you start vmd without providing a path to a document, i.e. if you
+   just type `vmd`.
+
+If you have configured a nice zoom factor but changed your mind just for this
+partifular time you can override the settings using command-line arguments.  
+Like this: `vmd --zoom=2 MYFILE.md`
+
 ## License
 [MIT](https://tldrlegal.com/license/mit-license)
 
