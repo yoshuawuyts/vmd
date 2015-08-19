@@ -6,10 +6,11 @@ const path = require('path')
 const app = require('app')
 const fs = require('fs')
 const getStdin = require('get-stdin')
+const conf = global.conf = require('./config')
 
 crashReporter.start()
 
-const filePath = process.argv[2]
+const filePath = conf._[0]
 const fromFile = Boolean(filePath)
 var stdin, window
 
@@ -45,6 +46,10 @@ app.on('ready', function () {
 
   window.loadUrl('file://' + __dirname + '/index.html')
   window.webContents.on('did-finish-load', sendMarkdown)
+
+  if (conf.devtools) {
+    window.openDevTools()
+  }
 
   if (fromFile) {
     watcher.on('change', sendMarkdown)

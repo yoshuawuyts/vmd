@@ -3,10 +3,12 @@ const spawn = require('child_process').spawn
 const electron = require('electron-prebuilt')
 const path = require('path')
 const fs = require('fs')
+const conf = require('../config')
 
 const serverPath = path.join(__dirname, '../server.js')
-const md = process.argv[2] || (process.stdin.isTTY ? 'README.md' : null)
-var args = [serverPath]
+const md = conf._[0] || (process.stdin.isTTY ? conf.document : null)
+
+var args = [ serverPath ].concat([].concat(process.argv).splice(2))
 
 if (md) {
   var stat
