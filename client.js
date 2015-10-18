@@ -19,8 +19,8 @@ ipc.on('md', function (raw) {
 })
 
 window.addEventListener('keydown', function (ev) {
-  var esc = ev.keyCode === 27;
-  var cmdW = ev.metaKey && ev.keyCode === 87;
+  var esc = ev.keyCode === 27
+  var cmdW = ev.metaKey && ev.keyCode === 87
 
   if (esc || cmdW) remote.getCurrentWindow().close()
 })
