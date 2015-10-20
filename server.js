@@ -53,6 +53,10 @@ app.on('ready', function () {
 
   if (fromFile) {
     watcher.on('change', sendMarkdown)
+    // (OS X) Set represented filename (icon in title bar)
+    if (process.platform === 'darwin') {
+      window.setRepresentedFilename(path.resolve(filePath))
+    }
   }
 })
 
