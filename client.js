@@ -20,9 +20,11 @@ ipc.on('md', function (raw) {
 
 window.addEventListener('keydown', function (ev) {
   var esc = ev.keyCode === 27
-  var cmdW = ev.metaKey && ev.keyCode === 87
+  var w = ev.keyCode === 87
+  var ctrlW = ev.ctrlKey && w
+  var cmdW = ev.metaKey && w
 
-  if (esc || cmdW) remote.getCurrentWindow().close()
+  if (esc || ctrlW || cmdW) remote.getCurrentWindow().close()
 })
 
 var zoom = require('./zoom')(conf.zoom)
