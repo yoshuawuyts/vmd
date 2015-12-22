@@ -53,6 +53,13 @@ var template = [
     ]
   },
   {
+    label: 'Edit',
+    submenu: [
+      { label: 'Copy', accelerator: 'CmdOrCtrl+C', selector: 'copy:' },
+      { label: 'Select All', accelerator: 'CmdOrCtrl+A', selector: 'selectAll:' }
+    ]
+  },
+  {
     label: 'View',
     submenu: [
       { label: 'Zoom In', accelerator: 'CmdOrCtrl+Plus', click: function () { zoom.zoomIn() } },
