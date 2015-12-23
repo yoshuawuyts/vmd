@@ -55,8 +55,8 @@ var template = [
   {
     label: 'Edit',
     submenu: [
-        { label: 'Copy', accelerator: 'CmdOrCtrl+C', click: function() { document.execCommand("copy") } },
-        { label: 'Select All', accelerator: 'CmdOrCtrl+A', click: function() { document.execCommand("selectAll") } }
+        { label: 'Copy', accelerator: 'CmdOrCtrl+C', click: function () { document.execCommand('copy') } },
+        { label: 'Select All', accelerator: 'CmdOrCtrl+A', click: function () { document.execCommand('selectAll') } }
     ]
   },
   {
