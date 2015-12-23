@@ -19,15 +19,15 @@
   ],
   "license": "MIT",
   "dependencies": {
-    "chokidar": "^1.0.0-rc3",
-    "electron-prebuilt": "^0.30.0",
-    "get-stdin": "^4.0.1",
-    "github-markdown-css": "^2.0.3",
-    "highlight.js": "^8.4.0",
+    "chokidar": "^1.4.1",
+    "electron-prebuilt": "^0.36.1",
+    "get-stdin": "^5.0.1",
+    "github-markdown-css": "^2.1.1",
+    "highlight.js": "^9.0.0",
     "marked": "^0.3.3",
-    "rucola": "^1.1.1"
+    "rucola": "^1.1.2"
   },
   "devDependencies": {
-    "standard": "^2.10.0"
+    "standard": "^5.4.1"
   }
 }

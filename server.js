@@ -15,10 +15,11 @@ const fromFile = Boolean(filePath)
 var stdin, window
 
 if (!fromFile) {
-  getStdin(function (body) {
-    stdin = body.toString()
-    sendMarkdown()
-  })
+  getStdin()
+    .then(function (body) {
+      stdin = body.toString()
+      sendMarkdown()
+    })
 }
 
 const resolved = fromFile ? path.resolve(path.dirname(filePath)) : process.cwd()
@@ -44,7 +45,7 @@ app.on('ready', function () {
     height: 600
   })
 
-  window.loadUrl('file://' + __dirname + '/index.html')
+  window.loadURL('file://' + __dirname + '/index.html')
   window.webContents.on('did-finish-load', sendMarkdown)
 
   if (conf.devtools) {
