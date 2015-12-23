@@ -15,10 +15,11 @@ const fromFile = Boolean(filePath)
 var stdin, window
 
 if (!fromFile) {
-  getStdin(function (body) {
-    stdin = body.toString()
-    sendMarkdown()
-  })
+  getStdin()
+    .then(function (body) {
+      stdin = body.toString()
+      sendMarkdown()
+    })
 }
 
 const resolved = fromFile ? path.resolve(path.dirname(filePath)) : process.cwd()
