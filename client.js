@@ -1,6 +1,8 @@
 const highlightjs = require('highlight.js')
 const marked = require('marked')
 const remote = require('remote')
+const Menu = remote.require('menu')
+const MenuItem = remote.require('menu-item')
 const ipc = require('ipc')
 const conf = remote.getGlobal('conf')
 
@@ -40,7 +42,7 @@ if (process.platform === 'darwin') {
     { type: 'separator' }
   ].concat(vmdSubmenu)
 }
-
+// Doc: https://github.com/atom/electron/blob/master/docs/api/menu-item.md
 var template = [
   {
     label: 'vmd',
@@ -55,8 +57,8 @@ var template = [
   {
     label: 'Edit',
     submenu: [
-        { label: 'Copy', accelerator: 'CmdOrCtrl+C', click: function () { document.execCommand('copy') } },
-        { label: 'Select All', accelerator: 'CmdOrCtrl+A', click: function () { document.execCommand('selectAll') } }
+        { label: 'Copy', accelerator: 'CmdOrCtrl+C', role: 'copy'},
+        { label: 'Select All', accelerator: 'CmdOrCtrl+A', role: 'selectall' }
     ]
   },
   {
@@ -69,5 +71,4 @@ var template = [
   }
 ]
 
-var Menu = remote.require('menu')
 Menu.setApplicationMenu(Menu.buildFromTemplate(template))
