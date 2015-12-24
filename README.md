@@ -57,8 +57,12 @@ document = README.md
    just type `vmd`.
 
 If you have configured a nice zoom factor but changed your mind just for this
-partifular time you can override the settings using command-line arguments.  
+particular time you can override the settings using command-line arguments.
 Like this: `vmd --zoom=2 MYFILE.md`
+
+## Authors
+- [Yoshua Wuyts](https://github.com/yoshuawuyts)
+- [Max Kueng](https://github.com/maxkueng)
 
 ## License
 [MIT](https://tldrlegal.com/license/mit-license)
