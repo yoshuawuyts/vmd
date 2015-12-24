@@ -2,7 +2,6 @@ const highlightjs = require('highlight.js')
 const marked = require('marked')
 const remote = require('remote')
 const Menu = remote.require('menu')
-const MenuItem = remote.require('menu-item')
 const ipc = require('ipc')
 const conf = remote.getGlobal('conf')
 
@@ -57,7 +56,7 @@ var template = [
   {
     label: 'Edit',
     submenu: [
-        { label: 'Copy', accelerator: 'CmdOrCtrl+C', role: 'copy'},
+        { label: 'Copy', accelerator: 'CmdOrCtrl+C', role: 'copy' },
         { label: 'Select All', accelerator: 'CmdOrCtrl+A', role: 'selectall' }
     ]
   },
