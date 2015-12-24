@@ -1,8 +1,11 @@
 const highlightjs = require('highlight.js')
 const marked = require('marked')
 const remote = require('remote')
+const Menu = remote.require('menu')
+const MenuItem = remote.require('menu-item')
 const ipc = require('ipc')
 const conf = remote.getGlobal('conf')
+const currentWindow = remote.getCurrentWindow()
 
 marked.setOptions({
   highlight: function (code, lang) {
@@ -24,7 +27,7 @@ window.addEventListener('keydown', function (ev) {
   var ctrlW = ev.ctrlKey && w
   var cmdW = ev.metaKey && w
 
-  if (esc || ctrlW || cmdW) remote.getCurrentWindow().close()
+  if (esc || ctrlW || cmdW) currentWindow.close()
 })
 
 var zoom = require('./zoom')(conf.zoom)
@@ -69,5 +72,53 @@ var template = [
   }
 ]
 
-var Menu = remote.require('menu')
+// Context menus
+// Doc: https://github.com/atom/electron/blob/master/docs/api/menu.md
+const menu = new Menu()
+
+menu.append(new MenuItem({
+  label: 'Copy',
+  role: 'copy'
+}))
+
+menu.append(new MenuItem({
+  label: 'Select All',
+  role: 'selectall'
+}))
+
+// Separator
+menu.append(new MenuItem({
+  type: 'separator'
+}))
+
+menu.append(new MenuItem({
+  label: 'Reload',
+  click: function() {
+    currentWindow.reload()
+  }
+}))
+
+menu.append(new MenuItem({
+  type: 'separator'
+}))
+
+var rightClickPosition = null
+menu.append(new MenuItem({
+  label: 'Inspect Element',
+  click: function() {
+    currentWindow.inspectElement(rightClickPosition.x, rightClickPosition.y);
+  }
+}))
+
+
+window.addEventListener('contextmenu', function(e) {
+  e.preventDefault()
+  rightClickPosition = {
+    x: e.x,
+    y: e.y
+  }
+  menu.popup(currentWindow)
+}, false)
+
+
 Menu.setApplicationMenu(Menu.buildFromTemplate(template))
