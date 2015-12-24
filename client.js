@@ -7,6 +7,8 @@ const ipc = require('ipc')
 const conf = remote.getGlobal('conf')
 const currentWindow = remote.getCurrentWindow()
 
+var rightClickPosition = null
+
 marked.setOptions({
   highlight: function (code, lang) {
     return highlightjs.highlightAuto(code, [lang]).value
@@ -97,6 +99,20 @@ var template = [{
     click: function () {
       zoom.reset()
     }
+  }, {
+    label: 'Toggle Developer Tools',
+    accelerator: (function () {
+      if (process.platform === 'darwin') {
+        return 'Alt+Command+I'
+      } else {
+        return 'Ctrl+Shift+I'
+      }
+    })(),
+    click: function (item, focusedWindow) {
+      if (focusedWindow) {
+        focusedWindow.toggleDevTools()
+      }
+    }
   }]
 }]
 
@@ -130,7 +146,6 @@ menu.append(new MenuItem({
   type: 'separator'
 }))
 
-var rightClickPosition = null
 menu.append(new MenuItem({
   label: 'Inspect Element',
   click: function () {
