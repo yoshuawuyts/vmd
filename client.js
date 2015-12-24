@@ -9,7 +9,7 @@ const currentWindow = remote.getCurrentWindow()
 
 marked.setOptions({
   highlight: function (code, lang) {
-    return highlightjs.highlightAuto(code, [ lang ]).value
+    return highlightjs.highlightAuto(code, [lang]).value
   }
 })
 
@@ -33,44 +33,72 @@ window.addEventListener('keydown', function (ev) {
 var zoom = require('./zoom')(conf.zoom)
 
 // menu
-var vmdSubmenu = [
-  { label: 'Quit', accelerator: 'CmdOrCtrl+Q', click: function () { remote.require('app').quit() } }
-]
+var vmdSubmenu = [{
+  label: 'Quit',
+  accelerator: 'CmdOrCtrl+Q',
+  click: function () {
+    remote.require('app').quit()
+  }
+}]
 
 if (process.platform === 'darwin') {
-  vmdSubmenu = [
-    { label: 'About vmd', selector: 'orderFrontStandardAboutPanel:' },
-    { type: 'separator' }
-  ].concat(vmdSubmenu)
+  vmdSubmenu = [{
+    label: 'About vmd',
+    selector: 'orderFrontStandardAboutPanel:'
+  }, {
+    type: 'separator'
+  }].concat(vmdSubmenu)
 }
 
-var template = [
-  {
-    label: 'vmd',
-    submenu: vmdSubmenu
-  },
-  {
-    label: 'File',
-    submenu: [
-      { label: 'Print', accelerator: 'CmdOrCtrl+P', click: function () { window.print() } }
-    ]
-  },
-  {
-    label: 'Edit',
-    submenu: [
-        { label: 'Copy', accelerator: 'CmdOrCtrl+C', click: function () { document.execCommand('copy') } },
-        { label: 'Select All', accelerator: 'CmdOrCtrl+A', click: function () { document.execCommand('selectAll') } }
-    ]
-  },
-  {
-    label: 'View',
-    submenu: [
-      { label: 'Zoom In', accelerator: 'CmdOrCtrl+Plus', click: function () { zoom.zoomIn() } },
-      { label: 'Zoom Out', accelerator: 'CmdOrCtrl+-', click: function () { zoom.zoomOut() } },
-      { label: 'Reset Zoom', accelerator: 'CmdOrCtrl+0', click: function () { zoom.reset() } }
-    ]
-  }
-]
+var template = [{
+  label: 'vmd',
+  submenu: vmdSubmenu
+}, {
+  label: 'File',
+  submenu: [{
+    label: 'Print',
+    accelerator: 'CmdOrCtrl+P',
+    click: function () {
+      window.print()
+    }
+  }]
+}, {
+  label: 'Edit',
+  submenu: [{
+    label: 'Copy',
+    accelerator: 'CmdOrCtrl+C',
+    click: function () {
+      document.execCommand('copy')
+    }
+  }, {
+    label: 'Select All',
+    accelerator: 'CmdOrCtrl+A',
+    click: function () {
+      document.execCommand('selectAll')
+    }
+  }]
+}, {
+  label: 'View',
+  submenu: [{
+    label: 'Zoom In',
+    accelerator: 'CmdOrCtrl+Plus',
+    click: function () {
+      zoom.zoomIn()
+    }
+  }, {
+    label: 'Zoom Out',
+    accelerator: 'CmdOrCtrl+-',
+    click: function () {
+      zoom.zoomOut()
+    }
+  }, {
+    label: 'Reset Zoom',
+    accelerator: 'CmdOrCtrl+0',
+    click: function () {
+      zoom.reset()
+    }
+  }]
+}]
 
 // Context menus
 // Doc: https://github.com/atom/electron/blob/master/docs/api/menu.md
@@ -93,7 +121,7 @@ menu.append(new MenuItem({
 
 menu.append(new MenuItem({
   label: 'Reload',
-  click: function() {
+  click: function () {
     currentWindow.reload()
   }
 }))
@@ -105,13 +133,15 @@ menu.append(new MenuItem({
 var rightClickPosition = null
 menu.append(new MenuItem({
   label: 'Inspect Element',
-  click: function() {
-    currentWindow.inspectElement(rightClickPosition.x, rightClickPosition.y);
+  click: function () {
+    currentWindow.inspectElement(
+      rightClickPosition.x,
+      rightClickPosition.y
+    )
   }
 }))
 
-
-window.addEventListener('contextmenu', function(e) {
+window.addEventListener('contextmenu', function (e) {
   e.preventDefault()
   rightClickPosition = {
     x: e.x,
@@ -119,6 +149,5 @@ window.addEventListener('contextmenu', function(e) {
   }
   menu.popup(currentWindow)
 }, false)
-
 
 Menu.setApplicationMenu(Menu.buildFromTemplate(template))
