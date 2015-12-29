@@ -44,77 +44,95 @@ var vmdSubmenu = [{
 }]
 
 if (process.platform === 'darwin') {
-  vmdSubmenu = [{
-    label: 'About vmd',
-    selector: 'orderFrontStandardAboutPanel:'
-  }, {
-    type: 'separator'
-  }].concat(vmdSubmenu)
+  vmdSubmenu = [
+    {
+      label: 'About vmd',
+      selector: 'orderFrontStandardAboutPanel:'
+    },
+    {
+      type: 'separator'
+    }
+  ].concat(vmdSubmenu)
 }
 
-var template = [{
-  label: 'vmd',
-  submenu: vmdSubmenu
-}, {
-  label: 'File',
-  submenu: [{
-    label: 'Print',
-    accelerator: 'CmdOrCtrl+P',
-    click: function () {
-      window.print()
-    }
-  }]
-}, {
-  label: 'Edit',
-  submenu: [{
-    label: 'Copy',
-    accelerator: 'CmdOrCtrl+C',
-    click: function () {
-      document.execCommand('copy')
-    }
-  }, {
-    label: 'Select All',
-    accelerator: 'CmdOrCtrl+A',
-    click: function () {
-      document.execCommand('selectAll')
-    }
-  }]
-}, {
-  label: 'View',
-  submenu: [{
-    label: 'Zoom In',
-    accelerator: 'CmdOrCtrl+Plus',
-    click: function () {
-      zoom.zoomIn()
-    }
-  }, {
-    label: 'Zoom Out',
-    accelerator: 'CmdOrCtrl+-',
-    click: function () {
-      zoom.zoomOut()
-    }
-  }, {
-    label: 'Reset Zoom',
-    accelerator: 'CmdOrCtrl+0',
-    click: function () {
-      zoom.reset()
-    }
-  }, {
-    label: 'Toggle Developer Tools',
-    accelerator: (function () {
-      if (process.platform === 'darwin') {
-        return 'Alt+Command+I'
-      } else {
-        return 'Ctrl+Shift+I'
+var template = [
+  {
+    label: 'vmd',
+    submenu: vmdSubmenu
+  },
+  {
+    label: 'File',
+    submenu: [
+      {
+        label: 'Print',
+        accelerator: 'CmdOrCtrl+P',
+        click: function () {
+          window.print()
+        }
       }
-    })(),
-    click: function (item, focusedWindow) {
-      if (focusedWindow) {
-        focusedWindow.toggleDevTools()
+    ]
+  },
+  {
+    label: 'Edit',
+    submenu: [
+      {
+        label: 'Copy',
+        accelerator: 'CmdOrCtrl+C',
+        click: function () {
+          document.execCommand('copy')
+        }
+      },
+      {
+        label: 'Select All',
+        accelerator: 'CmdOrCtrl+A',
+        click: function () {
+          document.execCommand('selectAll')
+        }
       }
-    }
-  }]
-}]
+    ]
+  },
+  {
+    label: 'View',
+    submenu: [
+      {
+        label: 'Zoom In',
+        accelerator: 'CmdOrCtrl+Plus',
+        click: function () {
+          zoom.zoomIn()
+        }
+      },
+      {
+        label: 'Zoom Out',
+        accelerator: 'CmdOrCtrl+-',
+        click: function () {
+          zoom.zoomOut()
+        }
+      },
+      {
+        label: 'Reset Zoom',
+        accelerator: 'CmdOrCtrl+0',
+        click: function () {
+          zoom.reset()
+        }
+      },
+      {
+        label: 'Toggle Developer Tools',
+        accelerator: (function () {
+          if (process.platform === 'darwin') {
+            return 'Alt+Command+I'
+          } else {
+            return 'Ctrl+Shift+I'
+          }
+        })(),
+        click: function (item, focusedWindow) {
+          if (focusedWindow) {
+            focusedWindow.toggleDevTools()
+          }
+        }
+      }
+    ]
+  }
+]
 
 // Context menus
 // Doc: https://github.com/atom/electron/blob/master/docs/api/menu.md
