@@ -20,7 +20,7 @@
   "license": "MIT",
   "dependencies": {
     "chokidar": "^1.4.1",
-    "electron-prebuilt": "^0.36.1",
+    "electron-prebuilt": "0.36.2",
     "get-stdin": "^5.0.1",
     "github-markdown-css": "^2.1.1",
     "highlight.js": "^9.0.0",
