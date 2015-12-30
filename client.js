@@ -35,13 +35,15 @@ window.addEventListener('keydown', function (ev) {
 var zoom = require('./zoom')(conf.zoom)
 
 // menu
-var vmdSubmenu = [{
-  label: 'Quit',
-  accelerator: 'CmdOrCtrl+Q',
-  click: function () {
-    remote.require('app').quit()
+var vmdSubmenu = [
+  {
+    label: 'Quit',
+    accelerator: 'CmdOrCtrl+Q',
+    click: function () {
+      remote.require('app').quit()
+    }
   }
-}]
+]
 
 if (process.platform === 'darwin') {
   vmdSubmenu = [
