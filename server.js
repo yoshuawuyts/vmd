@@ -1,9 +1,9 @@
 /*global window:true*/
-const BrowserWindow = require('browser-window')
-const crashReporter = require('crash-reporter')
+const app = require('electron').app
+const BrowserWindow = require('electron').BrowserWindow
+const crashReporter = require('electron').crashReporter
 const chokidar = require('chokidar')
 const path = require('path')
-const app = require('app')
 const fs = require('fs')
 const getStdin = require('get-stdin')
 const conf = global.conf = require('./config')

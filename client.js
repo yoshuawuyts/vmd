@@ -1,9 +1,10 @@
 const highlightjs = require('highlight.js')
 const marked = require('marked')
-const remote = require('remote')
-const Menu = remote.require('menu')
-const MenuItem = remote.require('menu-item')
-const ipc = require('ipc')
+const remote = require('electron').remote
+const app = remote.app
+const Menu = remote.Menu
+const MenuItem = remote.MenuItem
+const ipc = require('electron').ipcRenderer
 const conf = remote.getGlobal('conf')
 const currentWindow = remote.getCurrentWindow()
 
@@ -15,7 +16,7 @@ marked.setOptions({
   }
 })
 
-ipc.on('md', function (raw) {
+ipc.on('md', function (ev, raw) {
   const md = marked(raw)
   const base = document.querySelector('base')
   const body = document.querySelector('.markdown-body')
@@ -40,7 +41,7 @@ var vmdSubmenu = [
     label: 'Quit',
     accelerator: 'CmdOrCtrl+Q',
     click: function () {
-      remote.require('app').quit()
+      app.quit()
     }
   }
 ]
