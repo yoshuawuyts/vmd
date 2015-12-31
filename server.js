@@ -22,10 +22,6 @@ if (!fromFile) {
     })
 }
 
-const resolved = fromFile ? path.resolve(path.dirname(filePath)) : process.cwd()
-global.baseUrl = path.relative(__dirname, resolved)
-if (global.baseUrl) global.baseUrl += '/'
-
 var watcher
 if (fromFile) {
   watcher = chokidar.watch(filePath, { usePolling: true })
@@ -62,10 +58,22 @@ app.on('ready', function () {
 })
 
 function sendMarkdown () {
+  const resolved = fromFile
+    ? path.resolve(path.dirname(filePath))
+    : process.cwd()
+
+  var baseUrl = path.relative(__dirname, resolved)
+  if (baseUrl) baseUrl += '/'
+
   if (window) {
     var contents = fromFile
       ? fs.readFileSync(filePath, { encoding: 'utf8' })
       : stdin
-    window.webContents.send('md', contents)
+
+    window.webContents.send('md', {
+      filePath: filePath,
+      baseUrl: baseUrl,
+      contents: contents
+    })
   }
 }
