@@ -16,7 +16,7 @@ module.exports = function createWindow (options) {
   const fromFile = typeof options.filePath !== 'undefined'
   var watcher
 
-  const win = new BrowserWindow({
+  var win = new BrowserWindow({
     icon: path.join(__dirname, 'resources/vmd.png'),
     width: options.width,
     height: options.height
