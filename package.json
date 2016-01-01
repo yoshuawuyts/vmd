@@ -25,6 +25,7 @@
     "github-markdown-css": "^2.1.1",
     "highlight.js": "^9.0.0",
     "marked": "^0.3.3",
+    "object-assign": "^4.0.1",
     "rucola": "^1.1.2"
   },
   "devDependencies": {
