@@ -28,6 +28,10 @@ module.exports = function createWindow (options) {
   win.on('close', onClose)
   win.webContents.on('did-finish-load', sendMarkdown)
 
+  win.on('closed', function () {
+    win = null
+  })
+
   if (options.devTools) {
     win.openDevTools()
   }
@@ -37,25 +41,31 @@ module.exports = function createWindow (options) {
     watcher.on('change', sendMarkdown)
   }
 
-  ipc.on('change-file', function (ev, filePath) {
-    if (ev.sender === win.webContents) {
-      changeFile(filePath)
-    }
-  })
+  ipc.on('change-file', onChangeFile)
+  ipc.on('open-file', onOpenFile)
 
-  ipc.on('open-file', function (ev, filePath) {
+  function onOpenFile (ev, filePath) {
     if (ev.sender === win.webContents) {
       createWindow({
         filePath: filePath,
         devTools: options.devTools
       })
     }
-  })
+  }
+
+  function onChangeFile (ev, filePath) {
+    if (ev.sender === win.webContents) {
+      changeFile(filePath)
+    }
+  }
 
   function onClose () {
     if (watcher) {
       watcher.close()
     }
+
+    ipc.removeListener('change-file', onChangeFile)
+    ipc.removeListener('open-file', onOpenFile)
   }
 
   function updateTitle () {
