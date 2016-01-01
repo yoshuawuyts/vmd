@@ -37,6 +37,14 @@ function scrollToHash (hash) {
   }
 }
 
+function changeFile (filePath) {
+  ipc.send('change-file', filePath)
+}
+
+function openFile (filePath) {
+  ipc.send('open-file', filePath)
+}
+
 function handleLink (ev) {
   const filePath = document.body.getAttribute('data-filepath')
   const href = ev.target.getAttribute('href')
@@ -63,8 +71,11 @@ function handleLink (ev) {
         }
 
         if (isMarkdownPath(pathname)) {
-          console.log('MARKDOWN FILE')
-          return
+          if (ev.shiftKey) {
+            return openFile(pathname)
+          }
+
+          return changeFile(pathname)
         }
 
         return shell.openItem(pathname)
