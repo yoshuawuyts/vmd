@@ -11,6 +11,7 @@ const MenuItem = remote.MenuItem
 const ipc = require('electron').ipcRenderer
 const conf = remote.getGlobal('conf')
 const currentWindow = remote.getCurrentWindow()
+const hist = require('./history')()
 
 var rightClickPosition = null
 
@@ -29,6 +30,10 @@ function isMarkdownPath (filePath) {
 }
 
 function scrollToHash (hash) {
+  if (!hash) {
+    return document.body.scrollIntoView(true)
+  }
+
   hash = hash.slice(1)
   var el = document.getElementById(hash) || document.querySelector('a[name="' + hash + '"]')
 
@@ -45,6 +50,23 @@ function openFile (filePath) {
   ipc.send('open-file', filePath)
 }
 
+function navigateTo (item) {
+  if (item === null) {
+    return
+  }
+
+  const currentFilePath = document.body.getAttribute('data-filepath')
+  const isSameFile = !item.filePath || (currentFilePath === item.filePath)
+
+  if (isSameFile) {
+    return scrollToHash(item.hash)
+  }
+
+  if (item.filePath) {
+    changeFile(item.filePath)
+  }
+}
+
 function handleLink (ev) {
   const filePath = document.body.getAttribute('data-filepath')
   const href = ev.target.getAttribute('href')
@@ -58,7 +80,10 @@ function handleLink (ev) {
   }
 
   if (hash && !parsedHref.protocol && !parsedHref.pathname) {
-    return scrollToHash(hash)
+    return navigateTo(hist.push({
+      filePath: filePath,
+      hash: hash
+    }))
   }
 
   if (filePath) {
@@ -67,7 +92,10 @@ function handleLink (ev) {
 
       if (stat.isFile()) {
         if (hash && filePath === pathname) {
-          return scrollToHash(hash)
+          return navigateTo(hist.push({
+            filePath: filePath,
+            hash: hash
+          }))
         }
 
         if (isMarkdownPath(pathname)) {
@@ -75,7 +103,9 @@ function handleLink (ev) {
             return openFile(pathname)
           }
 
-          return changeFile(pathname)
+          return navigateTo(hist.push({
+            filePath: pathname
+          }))
         }
 
         return shell.openItem(pathname)
@@ -106,6 +136,12 @@ ipc.on('md', function (ev, data) {
 
   if (data.filePath) {
     body.setAttribute('data-filepath', data.filePath)
+
+    if (hist.current() === null) {
+      hist.push({ filePath: data.filePath })
+    }
+  } else {
+    hist.push({ hash: '' })
   }
 
   if (data.baseUrl) {
@@ -188,6 +224,25 @@ var template = [
         accelerator: 'CmdOrCtrl+A',
         click: function () {
           document.execCommand('selectAll')
+        }
+      }
+    ]
+  },
+  {
+    label: 'History',
+    submenu: [
+      {
+        label: 'Back',
+        accelerator: 'Alt+Left',
+        click: function () {
+          navigateTo(hist.back())
+        }
+      },
+      {
+        label: 'Forward',
+        accelerator: 'Alt+Right',
+        click: function () {
+          navigateTo(hist.forward())
         }
       }
     ]
