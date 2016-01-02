@@ -86,6 +86,7 @@ module.exports = function createWindow (options) {
     }
 
     options.filePath = filePath
+    updateTitle()
     sendMarkdown()
   }
 
