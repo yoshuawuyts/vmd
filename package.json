@@ -20,11 +20,13 @@
   "license": "MIT",
   "dependencies": {
     "chokidar": "^1.4.1",
+    "deep-equal": "^1.0.1",
     "electron-prebuilt": "0.36.2",
     "get-stdin": "^5.0.1",
     "github-markdown-css": "^2.1.1",
     "highlight.js": "^9.0.0",
     "marked": "^0.3.3",
+    "object-assign": "^4.0.1",
     "rucola": "^1.1.2"
   },
   "devDependencies": {
