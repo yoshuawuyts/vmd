@@ -16,7 +16,10 @@ module.exports = function createWindow (options) {
   const fromFile = typeof options.filePath !== 'undefined'
   var watcher
 
+  var preloadPath = path.resolve(__dirname, 'api.js')
+
   var win = new BrowserWindow({
+    preload: preloadPath,
     icon: path.join(__dirname, 'resources/vmd.png'),
     width: options.width,
     height: options.height
