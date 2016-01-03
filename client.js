@@ -217,13 +217,13 @@ const contextMenu = {
     },
     {
       item: new MenuItem({
-      label: 'Inspect Element',
-      click: function () {
-        currentWindow.inspectElement(
-          rightClickPosition.x,
-          rightClickPosition.y
-        )
-      }
+        label: 'Inspect Element',
+        click: function () {
+          currentWindow.inspectElement(
+            rightClickPosition.x,
+            rightClickPosition.y
+          )
+        }
       })
     }
   ],
