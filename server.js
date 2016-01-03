@@ -38,6 +38,11 @@ function addApplicationMenu () {
   // menu
   var vmdSubmenu = [
     {
+      label: 'Close window',
+      accelerator: 'CmdOrCtrl+W',
+      role: 'close'
+    },
+    {
       label: 'Quit',
       accelerator: 'CmdOrCtrl+Q',
       click: function () {

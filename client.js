@@ -175,11 +175,8 @@ window.addEventListener('click', function (ev) {
 
 window.addEventListener('keydown', function (ev) {
   var esc = ev.keyCode === 27
-  var w = ev.keyCode === 87
-  var ctrlW = ev.ctrlKey && w
-  var cmdW = ev.metaKey && w
 
-  if (esc || ctrlW || cmdW) currentWindow.close()
+  if (esc) currentWindow.close()
 })
 
 // Context menus
