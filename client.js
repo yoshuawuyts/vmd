@@ -179,51 +179,88 @@ window.addEventListener('keydown', function (ev) {
   if (esc) currentWindow.close()
 })
 
-// Context menus
-// Doc: https://github.com/atom/electron/blob/master/docs/api/menu.md
-const menu = new Menu()
+const contextMenu = {
+  items: [
+    {
+      item: new MenuItem({
+        label: 'Copy',
+        role: 'copy'
+      }),
+      visible: function (item) {
+        var selection = window.getSelection()
+        return selection && selection.toString() !== ''
+      }
+    },
+    {
+      item: new MenuItem({
+        label: 'Select All',
+        role: 'selectall'
+      })
+    },
+    {
+      item: new MenuItem({
+        type: 'separator'
+      })
+    },
+    {
+      item: new MenuItem({
+        label: 'Reload',
+        click: function () {
+          currentWindow.reload()
+        }
+      })
+    },
+    {
+      item: new MenuItem({
+        type: 'separator'
+      })
+    },
+    {
+      item: new MenuItem({
+      label: 'Inspect Element',
+      click: function () {
+        currentWindow.inspectElement(
+          rightClickPosition.x,
+          rightClickPosition.y
+        )
+      }
+      })
+    }
+  ],
 
-menu.append(new MenuItem({
-  label: 'Copy',
-  role: 'copy'
-}))
+  init: function () {
+    contextMenu.menu = new Menu()
 
-menu.append(new MenuItem({
-  label: 'Select All',
-  role: 'selectall'
-}))
+    contextMenu.items.forEach(function (item) {
+      contextMenu.menu.append(item.item)
+    })
 
-// Separator
-menu.append(new MenuItem({
-  type: 'separator'
-}))
+    contextMenu.update()
+  },
 
-menu.append(new MenuItem({
-  label: 'Reload',
-  click: function () {
-    currentWindow.reload()
+  update: function (ev) {
+    contextMenu.items.forEach(function (item) {
+      if (typeof item.visible === 'function') {
+        item.item.visible = item.visible(item, ev)
+      }
+
+      if (typeof item.enabled === 'function') {
+        item.item.enabled = item.enabled(item, ev)
+      }
+    })
   }
-}))
+}
 
-menu.append(new MenuItem({
-  type: 'separator'
-}))
+contextMenu.init()
 
-menu.append(new MenuItem({
-  label: 'Inspect Element',
-  click: function () {
-    currentWindow.inspectElement(
-      rightClickPosition.x,
-      rightClickPosition.y
-    )
-  }
-}))
+window.addEventListener('contextmenu', function (ev) {
+  ev.preventDefault()
 
-window.addEventListener('contextmenu', function (e) {
-  e.preventDefault()
   rightClickPosition = {
-    x: e.x,
-    y: e.y
+    x: ev.x,
+    y: ev.y
   }
-  menu.popup(currentWindow)
+
+  contextMenu.update(ev)
+  contextMenu.menu.popup(currentWindow)
 }, false)
