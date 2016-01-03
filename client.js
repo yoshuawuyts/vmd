@@ -263,6 +263,19 @@ const contextMenu = {
     },
     {
       item: new MenuItem({
+        label: 'Open file in new window',
+        click: function () {
+          var link = inspectLink(contextMenu.getElement())
+          return link && vmd.openFile(link.path)
+        }
+      }),
+      visible: function (item) {
+        var link = inspectLink(contextMenu.getElement())
+        return link && link.type === 'markdown-file'
+      }
+    },
+    {
+      item: new MenuItem({
         label: 'Scroll to anchor',
         click: function () {
           var link = inspectLink(contextMenu.getElement())
