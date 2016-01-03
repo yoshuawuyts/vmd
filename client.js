@@ -9,6 +9,7 @@ const fs = remote.require('fs')
 const shell = remote.shell
 const Menu = remote.Menu
 const MenuItem = remote.MenuItem
+const clipboard = remote.clipboard
 const conf = remote.getGlobal('conf')
 const currentWindow = remote.getCurrentWindow()
 const hist = require('./history')()
@@ -58,23 +59,31 @@ function navigateTo (item) {
   }
 }
 
-function handleLink (ev) {
+function inspectLink (el) {
+  if (!el || el.nodeName !== 'A') {
+    return null
+  }
+
   const filePath = document.body.getAttribute('data-filepath')
-  const href = ev.target.getAttribute('href')
+  const href = el.getAttribute('href')
   const parsedHref = url.parse(href)
   const hash = parsedHref.hash
-  const protocol = ev.target.protocol
-  const pathname = ev.target.pathname
+  const protocol = el.protocol
+  const pathname = el.pathname
 
   if (/^(http(s)?|mailto):$/.test(protocol)) {
-    return shell.openExternal(ev.target.href)
+    return {
+      type: 'external',
+      href: el.href
+    }
   }
 
   if (hash && !parsedHref.protocol && !parsedHref.pathname) {
-    return navigateTo(hist.push({
-      filePath: filePath,
+    return {
+      type: 'hash',
+      path: filePath,
       hash: hash
-    }))
+    }
   }
 
   if (filePath) {
@@ -83,27 +92,31 @@ function handleLink (ev) {
 
       if (stat.isFile()) {
         if (hash && filePath === pathname) {
-          return navigateTo(hist.push({
-            filePath: filePath,
+          return {
+            type: 'hash',
+            path: filePath,
             hash: hash
-          }))
+          }
         }
 
         if (isMarkdownPath(pathname)) {
-          if (ev.shiftKey) {
-            return vmd.openFile(pathname)
+          return {
+            type: 'markdown-file',
+            path: pathname
           }
-
-          return navigateTo(hist.push({
-            filePath: pathname
-          }))
         }
 
-        return shell.openItem(pathname)
+        return {
+          type: 'file',
+          path: pathname
+        }
       }
 
       if (stat.isDirectory()) {
-        return shell.openItem(pathname)
+        return {
+          type: 'directory',
+          path: pathname
+        }
       }
     } catch (ex) {
       console.log(ex)
@@ -111,11 +124,45 @@ function handleLink (ev) {
   }
 
   if (/^[a-z0-9-_]+:/g.test(href)) {
-    try {
-      shell.openExternal(ev.target.href)
-    } catch (ex) {
-      console.log(ex)
+    return {
+      type: 'external',
+      href: el.href
     }
+  }
+
+  return null
+}
+
+function handleLink (ev) {
+  var link = inspectLink(ev.target)
+
+  if (!link) {
+    return
+  }
+
+  if (link.type === 'external') {
+    return shell.openExternal(link.href)
+  }
+
+  if (link.type === 'hash') {
+    return navigateTo(hist.push({
+      filePath: link.path,
+      hash: link.hash
+    }))
+  }
+
+  if (link.type === 'directory' || link.type === 'file') {
+    return shell.openItem(link.path)
+  }
+
+  if (link.type === 'markdown-file') {
+    if (ev.shiftKey) {
+      return vmd.openFile(link.path)
+    }
+
+    return navigateTo(hist.push({
+      filePath: link.path
+    }))
   }
 }
 
@@ -181,12 +228,116 @@ const contextMenu = {
   items: [
     {
       item: new MenuItem({
+        label: 'Open folder',
+        click: function () {
+          var link = inspectLink(contextMenu.getElement())
+          return link && shell.openItem(link.path)
+        }
+      }),
+      visible: function (item) {
+        var link = inspectLink(contextMenu.getElement())
+        return link && link.type === 'directory'
+      }
+    },
+    {
+      item: new MenuItem({
+        label: 'Open file',
+        click: function () {
+          var link = inspectLink(contextMenu.getElement())
+
+          if (link && link.type === 'file') {
+            return link && shell.openItem(link.path)
+          }
+
+          if (link && link.type === 'markdown-file') {
+            return navigateTo(hist.push({
+              filePath: link.path
+            }))
+          }
+        }
+      }),
+      visible: function (item) {
+        var link = inspectLink(contextMenu.getElement())
+        return link && (link.type === 'file' || link.type === 'markdown-file')
+      }
+    },
+    {
+      item: new MenuItem({
+        label: 'Scroll to anchor',
+        click: function () {
+          var link = inspectLink(contextMenu.getElement())
+          return link && navigateTo(hist.push({
+            filePath: link.path,
+            hash: link.hash
+          }))
+        }
+      }),
+      visible: function (item) {
+        var link = inspectLink(contextMenu.getElement())
+        return link && link.type === 'hash'
+      }
+    },
+    {
+      item: new MenuItem({
+        label: 'Open link',
+        click: function () {
+          var link = inspectLink(contextMenu.getElement())
+          return link && shell.openExternal(link.href)
+        }
+      }),
+      visible: function (item) {
+        var link = inspectLink(contextMenu.getElement())
+        return link && link.type === 'external'
+      }
+    },
+    {
+      item: new MenuItem({
+        type: 'separator'
+      }),
+      visible: function (item) {
+        var link = inspectLink(contextMenu.getElement())
+        return link !== null
+      }
+    },
+    {
+      item: new MenuItem({
         label: 'Copy',
         role: 'copy'
       }),
       visible: function (item) {
         var selection = window.getSelection()
         return selection && selection.toString() !== ''
+      }
+    },
+    {
+      item: new MenuItem({
+        label: 'Copy link location',
+        click: function () {
+          var link = inspectLink(contextMenu.getElement())
+          return link && clipboard.writeText(link.href)
+        }
+      }),
+      visible: function (item) {
+        var link = inspectLink(contextMenu.getElement())
+        return link && link.type === 'external'
+      }
+    },
+    {
+      item: new MenuItem({
+        label: 'Copy path',
+        click: function () {
+          var link = inspectLink(contextMenu.getElement())
+          return link && clipboard.writeText(link.path)
+        }
+      }),
+      visible: function (item) {
+        var link = inspectLink(contextMenu.getElement())
+        var types = [
+          'directory',
+          'file',
+          'markdown-file'
+        ]
+        return link && types.indexOf(link.type) !== -1
       }
     },
     {
@@ -253,6 +404,11 @@ const contextMenu = {
         item.item.enabled = item.enabled(item, ev)
       }
     })
+  },
+
+  getElement: function () {
+    if (!contextMenu.position) { return null }
+    return document.elementFromPoint(contextMenu.position.x, contextMenu.position.y) || null
   },
 
   show: function (ev) {
