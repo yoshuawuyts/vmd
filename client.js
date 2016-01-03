@@ -14,8 +14,6 @@ const currentWindow = remote.getCurrentWindow()
 const hist = require('./history')()
 const zoom = require('./zoom')(conf.zoom)
 
-var rightClickPosition = null
-
 function isMarkdownPath (filePath) {
   // http://superuser.com/questions/249436/file-extension-for-markdown-files
   return [
@@ -220,8 +218,8 @@ const contextMenu = {
         label: 'Inspect Element',
         click: function () {
           currentWindow.inspectElement(
-            rightClickPosition.x,
-            rightClickPosition.y
+            contextMenu.position.x,
+            contextMenu.position.y
           )
         }
       })
@@ -239,6 +237,13 @@ const contextMenu = {
   },
 
   update: function (ev) {
+    if (ev) {
+      contextMenu.position = {
+        x: ev.x,
+        y: ev.y
+      }
+    }
+
     contextMenu.items.forEach(function (item) {
       if (typeof item.visible === 'function') {
         item.item.visible = item.visible(item, ev)
@@ -248,6 +253,11 @@ const contextMenu = {
         item.item.enabled = item.enabled(item, ev)
       }
     })
+  },
+
+  show: function (ev) {
+    contextMenu.update(ev)
+    contextMenu.menu.popup(currentWindow)
   }
 }
 
@@ -255,12 +265,5 @@ contextMenu.init()
 
 window.addEventListener('contextmenu', function (ev) {
   ev.preventDefault()
-
-  rightClickPosition = {
-    x: ev.x,
-    y: ev.y
-  }
-
-  contextMenu.update(ev)
-  contextMenu.menu.popup(currentWindow)
+  contextMenu.show(ev)
 }, false)
