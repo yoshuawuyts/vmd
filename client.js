@@ -221,16 +221,12 @@ var template = [
       {
         label: 'Copy',
         accelerator: 'CmdOrCtrl+C',
-        click: function () {
-          document.execCommand('copy')
-        }
+        role: 'copy'
       },
       {
         label: 'Select All',
         accelerator: 'CmdOrCtrl+A',
-        click: function () {
-          document.execCommand('selectAll')
-        }
+        role: 'selectall'
       }
     ]
   },
