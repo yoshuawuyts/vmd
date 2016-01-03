@@ -1,17 +1,18 @@
+/*global vmd:true*/
+
 const highlightjs = require('highlight.js')
 const marked = require('marked')
 const remote = require('electron').remote
 const url = remote.require('url')
 const path = remote.require('path')
 const fs = remote.require('fs')
-const app = remote.app
 const shell = remote.shell
 const Menu = remote.Menu
 const MenuItem = remote.MenuItem
-const ipc = require('electron').ipcRenderer
 const conf = remote.getGlobal('conf')
 const currentWindow = remote.getCurrentWindow()
 const hist = require('./history')()
+const zoom = require('./zoom')(conf.zoom)
 
 var rightClickPosition = null
 
@@ -42,14 +43,6 @@ function scrollToHash (hash) {
   }
 }
 
-function changeFile (filePath) {
-  ipc.send('change-file', filePath)
-}
-
-function openFile (filePath) {
-  ipc.send('open-file', filePath)
-}
-
 function navigateTo (item) {
   if (item === null) {
     return
@@ -63,7 +56,7 @@ function navigateTo (item) {
   }
 
   if (item.filePath) {
-    changeFile(item.filePath)
+    vmd.changeFile(item.filePath)
   }
 }
 
@@ -100,7 +93,7 @@ function handleLink (ev) {
 
         if (isMarkdownPath(pathname)) {
           if (ev.shiftKey) {
-            return openFile(pathname)
+            return vmd.openFile(pathname)
           }
 
           return navigateTo(hist.push({
@@ -134,7 +127,23 @@ marked.setOptions({
   }
 })
 
-ipc.on('md', function (ev, data) {
+vmd.onPrintAction(function () {
+  window.print()
+})
+
+vmd.onZoomInAction(zoom.zoomIn.bind(zoom))
+vmd.onZoomOutAction(zoom.zoomOut.bind(zoom))
+vmd.onZoomResetAction(zoom.reset.bind(zoom))
+
+vmd.onHistoryBackAction(function () {
+  navigateTo(hist.back())
+})
+
+vmd.onHistoryForwardAction(function () {
+  navigateTo(hist.forward())
+})
+
+vmd.onContent(function (ev, data) {
   const md = marked(data.contents)
   const body = document.body
   const base = document.querySelector('base')
@@ -172,125 +181,6 @@ window.addEventListener('keydown', function (ev) {
 
   if (esc || ctrlW || cmdW) currentWindow.close()
 })
-
-var zoom = require('./zoom')(conf.zoom)
-
-// menu
-var vmdSubmenu = [
-  {
-    label: 'Quit',
-    accelerator: 'CmdOrCtrl+Q',
-    click: function () {
-      app.quit()
-    }
-  }
-]
-
-if (process.platform === 'darwin') {
-  vmdSubmenu = [
-    {
-      label: 'About vmd',
-      selector: 'orderFrontStandardAboutPanel:'
-    },
-    {
-      type: 'separator'
-    }
-  ].concat(vmdSubmenu)
-}
-// Doc: https://github.com/atom/electron/blob/master/docs/api/menu-item.md
-var template = [
-  {
-    label: 'vmd',
-    submenu: vmdSubmenu
-  },
-  {
-    label: 'File',
-    submenu: [
-      {
-        label: 'Print',
-        accelerator: 'CmdOrCtrl+P',
-        click: function () {
-          window.print()
-        }
-      }
-    ]
-  },
-  {
-    label: 'Edit',
-    submenu: [
-      {
-        label: 'Copy',
-        accelerator: 'CmdOrCtrl+C',
-        role: 'copy'
-      },
-      {
-        label: 'Select All',
-        accelerator: 'CmdOrCtrl+A',
-        role: 'selectall'
-      }
-    ]
-  },
-  {
-    label: 'History',
-    submenu: [
-      {
-        label: 'Back',
-        accelerator: 'Alt+Left',
-        click: function () {
-          navigateTo(hist.back())
-        }
-      },
-      {
-        label: 'Forward',
-        accelerator: 'Alt+Right',
-        click: function () {
-          navigateTo(hist.forward())
-        }
-      }
-    ]
-  },
-  {
-    label: 'View',
-    submenu: [
-      {
-        label: 'Zoom In',
-        accelerator: 'CmdOrCtrl+Plus',
-        click: function () {
-          zoom.zoomIn()
-        }
-      },
-      {
-        label: 'Zoom Out',
-        accelerator: 'CmdOrCtrl+-',
-        click: function () {
-          zoom.zoomOut()
-        }
-      },
-      {
-        label: 'Reset Zoom',
-        accelerator: 'CmdOrCtrl+0',
-        click: function () {
-          zoom.reset()
-        }
-      },
-      {
-        label: 'Toggle Developer Tools',
-        accelerator: (function () {
-          if (process.platform === 'darwin') {
-            return 'Alt+Command+I'
-          } else {
-            return 'Ctrl+Shift+I'
-          }
-        })(),
-        click: function (item, focusedWindow) {
-          if (focusedWindow) {
-            focusedWindow.toggleDevTools()
-          }
-        }
-      }
-    ]
-  }
-]
 
 // Context menus
 // Doc: https://github.com/atom/electron/blob/master/docs/api/menu.md
@@ -340,5 +230,3 @@ window.addEventListener('contextmenu', function (e) {
   }
   menu.popup(currentWindow)
 }, false)
-
-Menu.setApplicationMenu(Menu.buildFromTemplate(template))
