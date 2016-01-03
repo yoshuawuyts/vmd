@@ -119,7 +119,13 @@ function handleLink (ev) {
     }
   }
 
-  shell.openExternal(ev.target.href)
+  if (/^[a-z0-9-_]+:/g.test(href)) {
+    try {
+      shell.openExternal(ev.target.href)
+    } catch (ex) {
+      console.log(ex)
+    }
+  }
 }
 
 marked.setOptions({
