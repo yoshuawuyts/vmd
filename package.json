@@ -1,6 +1,6 @@
 {
   "name": "vmd",
-  "version": "1.18.1",
+  "version": "1.19.0",
   "description": "vmd",
   "main": "server.js",
   "scripts": {
