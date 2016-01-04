@@ -58,8 +58,19 @@ function navigateTo (item) {
   }
 }
 
+function findLink (el) {
+  for (; el && el !== document; el = el.parentNode) {
+    if (el.nodeName === 'A') {
+      return el
+    }
+  }
+
+  return null
+}
+
 function inspectLink (el) {
-  if (!el || el.nodeName !== 'A') {
+  el = findLink(el)
+  if (!el) {
     return null
   }
 
