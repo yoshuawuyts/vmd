@@ -1,7 +1,5 @@
 /*global vmd:true*/
 
-const highlightjs = require('highlight.js')
-const marked = require('marked')
 const remote = require('electron').remote
 const url = remote.require('url')
 const path = remote.require('path')
@@ -12,6 +10,7 @@ const MenuItem = remote.MenuItem
 const clipboard = remote.clipboard
 const conf = remote.getGlobal('conf')
 const currentWindow = remote.getCurrentWindow()
+const renderMarkdown = require('./render-markdown')
 const hist = require('./history')()
 const zoom = require('./zoom')(conf.zoom)
 
@@ -166,12 +165,6 @@ function handleLink (ev) {
   }
 }
 
-marked.setOptions({
-  highlight: function (code, lang) {
-    return highlightjs.highlightAuto(code, [lang]).value
-  }
-})
-
 vmd.onPrintAction(function () {
   window.print()
 })
@@ -189,7 +182,7 @@ vmd.onHistoryForwardAction(function () {
 })
 
 vmd.onContent(function (ev, data) {
-  const md = marked(data.contents)
+  const md = renderMarkdown(data.contents)
   const body = document.body
   const base = document.querySelector('base')
   const mdBody = document.querySelector('.markdown-body')

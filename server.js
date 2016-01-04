@@ -1,3 +1,5 @@
+const path = require('path')
+const url = require('url')
 const app = require('electron').app
 const crashReporter = require('electron').crashReporter
 const Menu = require('electron').Menu
@@ -16,6 +18,7 @@ app.on('window-all-closed', function () {
 })
 
 app.on('ready', function () {
+  registerEmojiProtocol()
   addApplicationMenu()
 
   if (!fromFile) {
@@ -33,6 +36,26 @@ app.on('ready', function () {
     })
   }
 })
+
+function registerEmojiProtocol () {
+  const protocol = require('electron').protocol
+  const emojiPath = path.resolve(path.dirname(require.resolve('emojify.js')), '..', 'images', 'basic')
+
+  protocol.registerFileProtocol(
+    'emoji',
+    function (req, callback) {
+      var emoji = url.parse(req.url).hostname
+      callback({
+        path: path.join(emojiPath, emoji + '.png')
+      })
+    },
+    function (err) {
+      if (err) {
+        console.error('failed to register protocol')
+      }
+    }
+  )
+}
 
 function addApplicationMenu () {
   // menu
