@@ -315,6 +315,19 @@ const contextMenu = {
     },
     {
       item: new MenuItem({
+        label: 'Open image',
+        click: function () {
+          var img = getLinkType(findClosestImage(contextMenu.getElement()))
+          return img && shell.openItem(img.path)
+        }
+      }),
+      visible: function (item) {
+        var img = getLinkType(findClosestImage(contextMenu.getElement()))
+        return img && img.type === 'file'
+      }
+    },
+    {
+      item: new MenuItem({
         label: 'Open file in new window',
         click: function () {
           var link = getLinkType(findClosestLink(contextMenu.getElement()))
