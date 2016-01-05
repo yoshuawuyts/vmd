@@ -8,6 +8,7 @@ const shell = remote.shell
 const Menu = remote.Menu
 const MenuItem = remote.MenuItem
 const clipboard = remote.clipboard
+const nativeImage = remote.nativeImage
 const conf = remote.getGlobal('conf')
 const currentWindow = remote.getCurrentWindow()
 const renderMarkdown = require('./render-markdown')
@@ -26,6 +27,52 @@ function isMarkdownPath (filePath) {
     '.mdtxt',
     '.mdtext'
   ].indexOf(path.extname(filePath)) !== -1
+}
+
+function getImageDataUrl (imageUrl, callback) {
+  var img = new window.Image()
+
+  img.onload = function () {
+    var canvas = document.createElement('canvas')
+    canvas.width = img.naturalWidth
+    canvas.height = img.naturalHeight
+
+    canvas.getContext('2d').drawImage(img, 0, 0)
+
+    callback(null, canvas.toDataURL('image/png'))
+  }
+
+  img.src = imageUrl
+}
+
+function copyImageToClipboard (imageInfo, callback) {
+  if (!imageInfo) {
+    if (typeof callback === 'function') {
+      return callback(new Error('no image info'))
+    }
+  }
+
+  if (imageInfo.type === 'external') {
+    return getImageDataUrl(imageInfo.href, function (err, dataUrl) {
+      if (err) {
+        return
+      }
+
+      try {
+        clipboard.writeImage(nativeImage.createFromDataURL(dataUrl))
+      } catch (ex) {
+        console.log(ex)
+      }
+    })
+  }
+
+  if (imageInfo.type === 'file') {
+    try {
+      return clipboard.writeImage(nativeImage.createFromPath(imageInfo.path))
+    } catch (ex) {
+      console.log(ex)
+    }
+  }
 }
 
 function scrollToHash (hash) {
@@ -350,7 +397,6 @@ const contextMenu = {
       }),
       visible: function (item) {
         var img = getLinkType(findClosestImage(contextMenu.getElement()))
-        console.log('IM', img)
         return img && img.type === 'external'
       }
     },
@@ -383,6 +429,19 @@ const contextMenu = {
       visible: function (item) {
         var img = getLinkType(findClosestImage(contextMenu.getElement()))
         return img && img.type === 'file'
+      }
+    },
+    {
+      item: new MenuItem({
+        label: 'Copy image',
+        click: function () {
+          var img = getLinkType(findClosestImage(contextMenu.getElement()))
+          return img && copyImageToClipboard(img)
+        }
+      }),
+      visible: function (item) {
+        var img = getLinkType(findClosestImage(contextMenu.getElement()))
+        return !!img
       }
     },
     {
