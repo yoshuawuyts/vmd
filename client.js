@@ -58,9 +58,9 @@ function navigateTo (item) {
   }
 }
 
-function findLink (el) {
+function findClosestNode (nodeName, el) {
   for (; el && el !== document; el = el.parentNode) {
-    if (el.nodeName === 'A') {
+    if (el.nodeName === nodeName) {
       return el
     }
   }
@@ -68,27 +68,34 @@ function findLink (el) {
   return null
 }
 
-function inspectLink (el) {
-  el = findLink(el)
+const findClosestLink = findClosestNode.bind(null, 'A')
+const findClosestImage = findClosestNode.bind(null, 'IMG')
+
+function getLinkType (el) {
   if (!el) {
     return null
   }
 
+  const href = el.getAttribute('href') || el.getAttribute('src')
+
+  if (!href) {
+    return null
+  }
+
   const filePath = document.body.getAttribute('data-filepath')
-  const href = el.getAttribute('href')
   const parsedHref = url.parse(href)
   const hash = parsedHref.hash
-  const protocol = el.protocol
-  const pathname = el.pathname
+  const protocol = parsedHref.protocol
+  const pathname = parsedHref.pathname
 
-  if (/^(http(s)?|mailto):$/.test(protocol)) {
+  if (protocol && protocol !== 'file:') {
     return {
       type: 'external',
-      href: el.href
+      href: href
     }
   }
 
-  if (hash && !parsedHref.protocol && !parsedHref.pathname) {
+  if (hash && !protocol && !pathname) {
     return {
       type: 'hash',
       path: filePath,
@@ -96,12 +103,13 @@ function inspectLink (el) {
     }
   }
 
-  if (filePath) {
+  if (filePath && pathname) {
     try {
-      const stat = fs.statSync(pathname)
+      const targetPath = path.resolve(path.dirname(filePath), pathname)
+      const stat = fs.statSync(targetPath)
 
       if (stat.isFile()) {
-        if (hash && filePath === pathname) {
+        if (hash && filePath === targetPath) {
           return {
             type: 'hash',
             path: filePath,
@@ -109,23 +117,23 @@ function inspectLink (el) {
           }
         }
 
-        if (isMarkdownPath(pathname)) {
+        if (isMarkdownPath(targetPath)) {
           return {
             type: 'markdown-file',
-            path: pathname
+            path: targetPath
           }
         }
 
         return {
           type: 'file',
-          path: pathname
+          path: targetPath
         }
       }
 
       if (stat.isDirectory()) {
         return {
           type: 'directory',
-          path: pathname
+          path: targetPath
         }
       }
     } catch (ex) {
@@ -133,18 +141,11 @@ function inspectLink (el) {
     }
   }
 
-  if (/^[a-z0-9-_]+:/g.test(href)) {
-    return {
-      type: 'external',
-      href: el.href
-    }
-  }
-
   return null
 }
 
 function handleLink (ev) {
-  var link = inspectLink(ev.target)
+  var link = getLinkType(findClosestLink(ev.target))
 
   if (!link) {
     return
@@ -234,12 +235,12 @@ const contextMenu = {
       item: new MenuItem({
         label: 'Open folder',
         click: function () {
-          var link = inspectLink(contextMenu.getElement())
+          var link = getLinkType(findClosestLink(contextMenu.getElement()))
           return link && shell.openItem(link.path)
         }
       }),
       visible: function (item) {
-        var link = inspectLink(contextMenu.getElement())
+        var link = getLinkType(findClosestLink(contextMenu.getElement()))
         return link && link.type === 'directory'
       }
     },
@@ -247,7 +248,7 @@ const contextMenu = {
       item: new MenuItem({
         label: 'Open file',
         click: function () {
-          var link = inspectLink(contextMenu.getElement())
+          var link = getLinkType(findClosestLink(contextMenu.getElement()))
 
           if (link && link.type === 'file') {
             return link && shell.openItem(link.path)
@@ -261,7 +262,7 @@ const contextMenu = {
         }
       }),
       visible: function (item) {
-        var link = inspectLink(contextMenu.getElement())
+        var link = getLinkType(findClosestLink(contextMenu.getElement()))
         return link && (link.type === 'file' || link.type === 'markdown-file')
       }
     },
@@ -269,12 +270,12 @@ const contextMenu = {
       item: new MenuItem({
         label: 'Open file in new window',
         click: function () {
-          var link = inspectLink(contextMenu.getElement())
+          var link = getLinkType(findClosestLink(contextMenu.getElement()))
           return link && vmd.openFile(link.path)
         }
       }),
       visible: function (item) {
-        var link = inspectLink(contextMenu.getElement())
+        var link = getLinkType(findClosestLink(contextMenu.getElement()))
         return link && link.type === 'markdown-file'
       }
     },
@@ -282,7 +283,7 @@ const contextMenu = {
       item: new MenuItem({
         label: 'Scroll to anchor',
         click: function () {
-          var link = inspectLink(contextMenu.getElement())
+          var link = getLinkType(findClosestLink(contextMenu.getElement()))
           return link && navigateTo(hist.push({
             filePath: link.path,
             hash: link.hash
@@ -290,7 +291,7 @@ const contextMenu = {
         }
       }),
       visible: function (item) {
-        var link = inspectLink(contextMenu.getElement())
+        var link = getLinkType(findClosestLink(contextMenu.getElement()))
         return link && link.type === 'hash'
       }
     },
@@ -298,12 +299,12 @@ const contextMenu = {
       item: new MenuItem({
         label: 'Open link',
         click: function () {
-          var link = inspectLink(contextMenu.getElement())
+          var link = getLinkType(findClosestLink(contextMenu.getElement()))
           return link && shell.openExternal(link.href)
         }
       }),
       visible: function (item) {
-        var link = inspectLink(contextMenu.getElement())
+        var link = getLinkType(findClosestLink(contextMenu.getElement()))
         return link && link.type === 'external'
       }
     },
@@ -312,7 +313,7 @@ const contextMenu = {
         type: 'separator'
       }),
       visible: function (item) {
-        var link = inspectLink(contextMenu.getElement())
+        var link = getLinkType(findClosestLink(contextMenu.getElement()))
         return link !== null
       }
     },
@@ -328,33 +329,60 @@ const contextMenu = {
     },
     {
       item: new MenuItem({
-        label: 'Copy link location',
+        label: 'Copy link address',
         click: function () {
-          var link = inspectLink(contextMenu.getElement())
+          var link = getLinkType(findClosestLink(contextMenu.getElement()))
           return link && clipboard.writeText(link.href)
         }
       }),
       visible: function (item) {
-        var link = inspectLink(contextMenu.getElement())
+        var link = getLinkType(findClosestLink(contextMenu.getElement()))
         return link && link.type === 'external'
+      }
+    },
+    {
+      item: new MenuItem({
+        label: 'Copy image address',
+        click: function () {
+          var img = getLinkType(findClosestImage(contextMenu.getElement()))
+          return img && clipboard.writeText(img.href)
+        }
+      }),
+      visible: function (item) {
+        var img = getLinkType(findClosestImage(contextMenu.getElement()))
+        console.log('IM', img)
+        return img && img.type === 'external'
       }
     },
     {
       item: new MenuItem({
         label: 'Copy path',
         click: function () {
-          var link = inspectLink(contextMenu.getElement())
+          var link = getLinkType(findClosestLink(contextMenu.getElement()))
           return link && clipboard.writeText(link.path)
         }
       }),
       visible: function (item) {
-        var link = inspectLink(contextMenu.getElement())
+        var link = getLinkType(findClosestLink(contextMenu.getElement()))
         var types = [
           'directory',
           'file',
           'markdown-file'
         ]
         return link && types.indexOf(link.type) !== -1
+      }
+    },
+    {
+      item: new MenuItem({
+        label: 'Copy image path',
+        click: function () {
+          var img = getLinkType(findClosestImage(contextMenu.getElement()))
+          return img && clipboard.writeText(img.path)
+        }
+      }),
+      visible: function (item) {
+        var img = getLinkType(findClosestImage(contextMenu.getElement()))
+        return img && img.type === 'file'
       }
     },
     {
