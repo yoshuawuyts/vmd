@@ -57,7 +57,6 @@ marked.InlineLexer.prototype.output = function (src) {
 
 marked.setOptions({
   renderer: renderer,
-  sanitize: true,
   smartLists: true,
   highlight: function (code, lang) {
     return highlightjs.highlightAuto(code, [lang]).value
