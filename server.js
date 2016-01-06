@@ -1,13 +1,10 @@
 const path = require('path')
 const url = require('url')
 const app = require('electron').app
-const crashReporter = require('electron').crashReporter
 const Menu = require('electron').Menu
 const getStdin = require('get-stdin')
 const createWindow = require('./create-window')
 const conf = global.conf = require('./config')
-
-crashReporter.start()
 
 const filePath = conf._[0]
 const fromFile = Boolean(filePath)
