@@ -264,10 +264,8 @@ vmd.onContent(function (ev, data) {
 })
 
 window.addEventListener('click', function (ev) {
-  if (ev.target.nodeName === 'A') {
-    ev.preventDefault()
-    handleLink(ev)
-  }
+  ev.preventDefault()
+  handleLink(ev)
 })
 
 window.addEventListener('keydown', function (ev) {
