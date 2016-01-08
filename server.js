@@ -50,19 +50,19 @@ app.on('ready', function () {
   registerEmojiProtocol()
   addApplicationMenu()
 
+  var windowOptions = {
+    devTools: conf.devtools
+  }
+
   if (!fromFile) {
     getStdin()
       .then(function (body) {
-        createWindow({
-          contents: body.toString(),
-          devTools: conf.devtools
-        })
+        windowOptions.contents = body.toString()
+        createWindow(windowOptions)
       })
   } else {
-    createWindow({
-      filePath: filePath,
-      devTools: conf.devtools
-    })
+    windowOptions.filePath = filePath
+    createWindow(windowOptions)
   }
 })
 
