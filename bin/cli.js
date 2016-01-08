@@ -32,9 +32,4 @@ if (md) {
 }
 
 // spawn electron
-var proc = spawn(electron, args)
-
-// pipe stdin into child process, if something was piped in
-if (!md) {
-  process.stdin.pipe(proc.stdin)
-}
+var proc = spawn(electron, args, { stdio: 'inherit' })
