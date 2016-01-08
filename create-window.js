@@ -1,5 +1,6 @@
 const path = require('path')
 const fs = require('fs')
+const app = require('electron').app
 const BrowserWindow = require('electron').BrowserWindow
 const ipc = require('electron').ipcMain
 const chokidar = require('chokidar')
@@ -27,7 +28,8 @@ module.exports = function createWindow (options) {
 
   updateTitle()
 
-  win.loadURL('file://' + __dirname + '/index.html')
+  temporarilyInterceptFileProtocol()
+  win.loadURL('file://' + __dirname + '/vmd')
   win.on('close', onClose)
   win.webContents.on('did-finish-load', sendMarkdown)
 
@@ -112,6 +114,71 @@ module.exports = function createWindow (options) {
         contents: contents
       })
     }
+  }
+
+  function getHighlightTheme (theme) {
+    var themePath = path.resolve(require.resolve('highlight.js'), '../..', 'styles', theme + '.css')
+
+    try {
+      return fs.readFileSync(themePath, 'utf-8')
+    } catch (ex) {
+      console.error('Cannot load theme', theme + ':', ex.code === 'ENOENT' ? 'no such file' : ex.message)
+      app.exit(1)
+    }
+  }
+
+  function getStylesheet (filePath) {
+    var stylePath = path.resolve(filePath)
+
+    try {
+      return fs.readFileSync(stylePath, 'utf-8')
+    } catch (ex) {
+      console.error('Cannot load style', filePath + ':', ex.code === 'ENOENT' ? 'no such file' : ex.message)
+      app.exit(1)
+    }
+  }
+
+  function temporarilyInterceptFileProtocol () {
+    // very hacky way to dynamically create index.html
+    const protocol = require('electron').protocol
+    const template = require('lodash.template')
+    const indexHtml = template(fs.readFileSync(path.join(__dirname, 'index.html'), { encoding: 'utf-8' }))
+
+    protocol.interceptStringProtocol(
+      'file',
+      function (req, callback) {
+        var mainStyle = options.mainStylesheet
+          ? getStylesheet(options.mainStylesheet)
+          : getStylesheet('node_modules/github-markdown-css/github-markdown.css')
+
+        var extraStyle = options.extraStylesheet
+          ? getStylesheet(options.extraStylesheet)
+          : ''
+
+        var highlightStyle = options.highlightStylesheet
+          ? getStylesheet(options.highlightStylesheet)
+          : getHighlightTheme('default') + '\n' + getHighlightTheme(options.highlightTheme)
+
+        var data = {
+          mainStyle: mainStyle,
+          extraStyle: extraStyle,
+          highlightStyle: highlightStyle
+        }
+        callback({
+          mimeType: 'text/html',
+          data: indexHtml(data)
+        })
+
+        process.nextTick(function () {
+          protocol.uninterceptProtocol('file')
+        })
+      },
+      function (err, scheme) {
+        if (err) {
+          console.error('failed to register', scheme, 'protocol')
+        }
+      }
+    )
   }
 
   return {

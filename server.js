@@ -51,7 +51,11 @@ app.on('ready', function () {
   addApplicationMenu()
 
   var windowOptions = {
-    devTools: conf.devtools
+    devTools: conf.devtools,
+    mainStylesheet: conf.get('styles.main'),
+    extraStylesheet: conf.get('styles.extra'),
+    highlightTheme: conf.get('highlight.theme'),
+    highlightStylesheet: conf.get('highlight.stylesheet')
   }
 
   if (!fromFile) {

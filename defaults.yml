@@ -1,3 +1,5 @@
 ---
 document: README.md
 zoom: 1
+highlight:
+  theme: github
