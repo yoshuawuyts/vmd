@@ -5,4 +5,8 @@ const path = require('path')
 const serverPath = path.join(__dirname, '../server.js')
 
 var args = [ serverPath ].concat([].concat(process.argv).splice(2))
-spawn(electron, args, { stdio: 'inherit' })
+
+var proc = spawn(electron, args, { stdio: 'inherit' })
+proc.on('close', function (code) {
+  process.exit(code)
+})
