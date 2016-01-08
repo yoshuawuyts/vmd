@@ -4,8 +4,25 @@ const url = require('url')
 const app = require('electron').app
 const Menu = require('electron').Menu
 const getStdin = require('get-stdin')
+const pkg = require('./package.json')
 const createWindow = require('./create-window')
 const conf = global.conf = require('./config')
+
+if (conf.version) {
+  console.log(pkg.version)
+  app.exit(0)
+}
+
+if (conf.versions) {
+  console.log('vmd:      ', pkg.version)
+  console.log('electron: ', process.versions['electron'])
+  console.log('node:     ', process.versions['node'])
+  console.log('chrome:   ', process.versions['chrome'])
+  console.log('v8:       ', process.versions['v8'])
+  console.log('openssl:  ', process.versions['openssl'])
+  console.log('zlib:     ', process.versions['zlib'])
+  app.exit(0)
+}
 
 const filePath = conf._[0] || (process.stdin.isTTY ? conf.document : null)
 const fromFile = !!filePath
