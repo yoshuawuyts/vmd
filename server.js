@@ -1,3 +1,4 @@
+const fs = require('fs')
 const path = require('path')
 const url = require('url')
 const app = require('electron').app
@@ -6,8 +7,22 @@ const getStdin = require('get-stdin')
 const createWindow = require('./create-window')
 const conf = global.conf = require('./config')
 
-const filePath = conf._[0]
-const fromFile = Boolean(filePath)
+const filePath = conf._[0] || (process.stdin.isTTY ? conf.document : null)
+const fromFile = !!filePath
+
+if (fromFile) {
+  try {
+    var stat = fs.statSync(path.resolve(filePath))
+
+    if (stat.isDirectory()) {
+      console.error('Cannot open', filePath + ': is a directory')
+      process.exit(1)
+    }
+  } catch (ex) {
+    console.error('Cannot open', filePath + ':', ex.code === 'ENOENT' ? 'no such file' : ex.message)
+    process.exit(1)
+  }
+}
 
 // Quit when all windows are closed.
 app.on('window-all-closed', function () {
