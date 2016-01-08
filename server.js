@@ -16,11 +16,11 @@ if (fromFile) {
 
     if (stat.isDirectory()) {
       console.error('Cannot open', filePath + ': is a directory')
-      process.exit(1)
+      app.exit(1)
     }
   } catch (ex) {
     console.error('Cannot open', filePath + ':', ex.code === 'ENOENT' ? 'no such file' : ex.message)
-    process.exit(1)
+    app.exit(1)
   }
 }
 
