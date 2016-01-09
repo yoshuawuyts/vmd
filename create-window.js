@@ -4,6 +4,7 @@ const BrowserWindow = require('electron').BrowserWindow
 const ipc = require('electron').ipcMain
 const chokidar = require('chokidar')
 const assign = require('object-assign')
+const styles = require('./styles')
 
 const defaultOptions = {
   width: 800,
@@ -27,7 +28,8 @@ module.exports = function createWindow (options) {
 
   updateTitle()
 
-  win.loadURL('file://' + __dirname + '/index.html')
+  temporarilyInterceptFileProtocol()
+  win.loadURL('file://' + __dirname + '/vmd')
   win.on('close', onClose)
   win.webContents.on('did-finish-load', sendMarkdown)
 
@@ -112,6 +114,49 @@ module.exports = function createWindow (options) {
         contents: contents
       })
     }
+  }
+
+  function temporarilyInterceptFileProtocol () {
+    // very hacky way to dynamically create index.html
+    const protocol = require('electron').protocol
+    const template = require('lodash.template')
+    const indexHtml = template(fs.readFileSync(path.join(__dirname, 'index.html'), { encoding: 'utf-8' }))
+
+    protocol.interceptStringProtocol(
+      'file',
+      function (req, callback) {
+        var mainStyle = options.mainStylesheet
+          ? styles.getStylesheet(options.mainStylesheet)
+          : styles.getStylesheet('node_modules/github-markdown-css/github-markdown.css')
+
+        var extraStyle = options.extraStylesheet
+          ? styles.getStylesheet(options.extraStylesheet)
+          : ''
+
+        var highlightStyle = options.highlightStylesheet
+          ? styles.getStylesheet(options.highlightStylesheet)
+          : styles.getHighlightTheme('default') + '\n' + styles.getHighlightTheme(options.highlightTheme)
+
+        var data = {
+          mainStyle: mainStyle,
+          extraStyle: extraStyle,
+          highlightStyle: highlightStyle
+        }
+        callback({
+          mimeType: 'text/html',
+          data: indexHtml(data)
+        })
+
+        process.nextTick(function () {
+          protocol.uninterceptProtocol('file')
+        })
+      },
+      function (err, scheme) {
+        if (err) {
+          console.error('failed to register', scheme, 'protocol')
+        }
+      }
+    )
   }
 
   return {

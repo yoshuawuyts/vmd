@@ -7,6 +7,7 @@ const getStdin = require('get-stdin')
 const pkg = require('./package.json')
 const createWindow = require('./create-window')
 const conf = global.conf = require('./config')
+const styles = require('./styles')
 
 if (conf.version) {
   console.log(pkg.version)
@@ -21,6 +22,15 @@ if (conf.versions) {
   console.log('v8:       ', process.versions['v8'])
   console.log('openssl:  ', process.versions['openssl'])
   console.log('zlib:     ', process.versions['zlib'])
+  app.exit(0)
+}
+
+if (conf.get('list.highlight.themes')) {
+  console.log('Available highlight.js themes:')
+  styles.getHighlightThemes()
+    .forEach(function (name) {
+      console.log(' - ' + name)
+    })
   app.exit(0)
 }
 
@@ -51,7 +61,11 @@ app.on('ready', function () {
   addApplicationMenu()
 
   var windowOptions = {
-    devTools: conf.devtools
+    devTools: conf.devtools,
+    mainStylesheet: conf.get('styles.main'),
+    extraStylesheet: conf.get('styles.extra'),
+    highlightTheme: conf.get('highlight.theme'),
+    highlightStylesheet: conf.get('highlight.stylesheet')
   }
 
   if (!fromFile) {
