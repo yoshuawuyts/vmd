@@ -29,7 +29,7 @@
     "lodash.template": "^3.6.2",
     "marked": "^0.3.3",
     "object-assign": "^4.0.1",
-    "rucola": "^1.1.2"
+    "rucola": "^1.1.3"
   },
   "devDependencies": {
     "standard": "^5.4.1"
