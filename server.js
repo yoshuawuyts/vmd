@@ -9,6 +9,11 @@ const createWindow = require('./create-window')
 const conf = global.conf = require('./config')
 const styles = require('./styles')
 
+if (conf.help) {
+  console.log(fs.readFileSync(__dirname + '/usage.txt', 'utf-8'))
+  app.exit(0)
+}
+
 if (conf.version) {
   console.log(pkg.version)
   app.exit(0)

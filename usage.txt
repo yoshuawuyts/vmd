@@ -1,0 +1,53 @@
+Usage: vmd [FILE] [OPTIONS]
+
+  Preview markdown files in a separate window. Markdown is formatted exactly
+  the same as on GitHub.
+
+With no FILE, read from standard input.
+
+Options:
+
+  -v, --version                    Show vmd version number.
+
+      --versions                   Show version numbers of different internal
+                                   components.
+
+  -h, --help                       Show this help.
+
+  -d, --devtools                   Open developer tools.
+
+  -z, --zoom=NUM                   Set the zoom factor. Default: 1
+
+      --list-highlight-themes      Show a list of available syntax
+                                   highlighting themes.
+
+      --style-main=FILE            Provide a custom CSS file.
+
+      --style-extra=FILE           Provide a custom CSS file to extens the
+                                   existing styles.
+
+      --highlight-theme=NAME       Set the syntax highlighting theme. See
+                                   --list-highlight-themes for theme names.
+
+      --highlight-stylesheet=FILE  Provide a custom CSS file for syntax
+                                   highlighting.
+
+
+Examples:
+
+  vmd README.md
+
+  npm view browserify readme | vmd
+
+  cat README.md | vmd --highlight-theme=monokai
+
+
+Configuration:
+
+All OPTIONS can also be saved in ~/.vmdrc, ~/.config/vmd, /etc/vmdrc in YAML,
+INI or JSON format.
+
+Example INI file ~/.vmdrc:
+
+  zoom = 1.2
+  highlight.theme = monokai
