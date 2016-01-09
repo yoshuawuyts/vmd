@@ -22,7 +22,8 @@ same as on GitHub.
    preview.
 
  - **Standard input:** View any markdown text from other programs by piping
-   another program's output in to vmd.
+   another program's output in to vmd. Check out the [examples](#examples) for
+   cool use cases.
 
  - **Navigation:** Navigate within linked sections in a document, open relative
    links to other documents in the same window or in a new one (`shift-click`),
