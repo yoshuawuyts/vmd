@@ -1,10 +1,10 @@
 const path = require('path')
 const fs = require('fs')
-const app = require('electron').app
 const BrowserWindow = require('electron').BrowserWindow
 const ipc = require('electron').ipcMain
 const chokidar = require('chokidar')
 const assign = require('object-assign')
+const styles = require('./styles')
 
 const defaultOptions = {
   width: 800,
@@ -116,28 +116,6 @@ module.exports = function createWindow (options) {
     }
   }
 
-  function getHighlightTheme (theme) {
-    var themePath = path.resolve(require.resolve('highlight.js'), '../..', 'styles', theme + '.css')
-
-    try {
-      return fs.readFileSync(themePath, 'utf-8')
-    } catch (ex) {
-      console.error('Cannot load theme', theme + ':', ex.code === 'ENOENT' ? 'no such file' : ex.message)
-      app.exit(1)
-    }
-  }
-
-  function getStylesheet (filePath) {
-    var stylePath = path.resolve(filePath)
-
-    try {
-      return fs.readFileSync(stylePath, 'utf-8')
-    } catch (ex) {
-      console.error('Cannot load style', filePath + ':', ex.code === 'ENOENT' ? 'no such file' : ex.message)
-      app.exit(1)
-    }
-  }
-
   function temporarilyInterceptFileProtocol () {
     // very hacky way to dynamically create index.html
     const protocol = require('electron').protocol
@@ -148,16 +126,16 @@ module.exports = function createWindow (options) {
       'file',
       function (req, callback) {
         var mainStyle = options.mainStylesheet
-          ? getStylesheet(options.mainStylesheet)
-          : getStylesheet('node_modules/github-markdown-css/github-markdown.css')
+          ? styles.getStylesheet(options.mainStylesheet)
+          : styles.getStylesheet('node_modules/github-markdown-css/github-markdown.css')
 
         var extraStyle = options.extraStylesheet
-          ? getStylesheet(options.extraStylesheet)
+          ? styles.getStylesheet(options.extraStylesheet)
           : ''
 
         var highlightStyle = options.highlightStylesheet
-          ? getStylesheet(options.highlightStylesheet)
-          : getHighlightTheme('default') + '\n' + getHighlightTheme(options.highlightTheme)
+          ? styles.getStylesheet(options.highlightStylesheet)
+          : styles.getHighlightTheme('default') + '\n' + styles.getHighlightTheme(options.highlightTheme)
 
         var data = {
           mainStyle: mainStyle,
