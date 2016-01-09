@@ -21,9 +21,9 @@ Options:
       --list-highlight-themes      Show a list of available syntax
                                    highlighting themes.
 
-      --style-main=FILE            Provide a custom CSS file.
+      --styles-main=FILE           Provide a custom CSS file.
 
-      --style-extra=FILE           Provide a custom CSS file to extens the
+      --styles-extra=FILE          Provide a custom CSS file to extens the
                                    existing styles.
 
       --highlight-theme=NAME       Set the syntax highlighting theme. See
