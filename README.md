@@ -10,61 +10,113 @@ same as on GitHub.
 ![screenshot](./docs/screenshot.png)
 
 ## Installation
+
 ```bash
 $ npm install -g vmd
 ```
 
 ## Usage
+
+```
+vmd [FILE] [OPTIONS]
+```
+
+If no FILE is provided it will try to read from standard input, or
+automatically look for "README.md" if in a TTY.
+
+### Examples
+
+Read a file from disk:
+
 ```sh
 $ vmd DOCUMENT.md
 ```
 
-When no path to a document is supplied, "README.md" will be opened by default.
+When no path to a document is supplied, "README.md" will be opened by default:
 
 ```sh
 $ vmd
 ```
 
-You can also pipe markdown content into `stdin`:
+It reads from `stdin` so you can pipe markdown text in to it:
 
 ```sh
 $ cat README.md | vmd
 ```
 
-For example, you can see the markdown for [browserify](https://github.com/substack/node-browserify) like so:
+For example, you can see the readme for [browserify](https://github.com/substack/node-browserify) like so:
 
 ```sh
 $ npm view browserify readme | vmd
 ```
 
+Or from a GitHub project:
+
+```sh
+$ gh-rtfm substack/node-browserify | vmd
+```
+
+### Options
+
+ - `-v, --version`: Display the version number.
+
+ - `--versions`: Display version numbers of different internal components such
+   as Electron.
+
+ - `-h, --help`: Display usage instructions.
+
+ - `-d, --devtools`: Open with the developer tools open.
+
+ - `-z, --zoom=NUM`: Set a zoom factor to make the content larger or smaller.
+   For example `--zoom=1.25`
+
+ - `--document=FILENAME`: vmd will look for "README.md" by default if no file
+   path has been specified. This can be changed to something else.
+
+ - `--list-highlight-themes`: Display a list of available syntax highlighting
+   themes.
+
+ - `--styles-main=FILE`: Provide a custom CSS file to display the content.
+
+ - `--styles-extra=FILE`: Provide a custom CSS file to do additional styling.
+   For example to override some CSS properties fr the default style.
+
+ - `--highlight-theme=NAME`: Use a different syntax highlighting theme for code
+   blocks. Run `vmd --list-highlight-themes` to get a list of available themes.
+
+ - `--highlight-stylesheet=FILE`: Provide a custom CSS file for syntax
+   highlighting in code blocks.
+
 ## Configuration
+
+All [Options](#options) that contain a value can be persisted in configuration
+file in INI, YAML or JSON format. The configuration file can be in any of the
+following locations: `$HOME/.vmdrc`, `$HOME/.vmd/config`, `$HOME/.config/vmd`,
+`$HOME/.config/vmd/config`, `/etc/vmdrc`, or a custom location provided using
+the `--config=FILE` option.
 
 If you wish to change some of the default settings create a config file called
 `.vmdrc` in your home directory or in `~/.config/vmd`.
 
-Here's a sample config file (shows the default values):
+Here's a sample config file:
 
 ```ini
-zoom = 1.0
-document = README.md
+zoom = 1.2
+highlight.theme = monokai
+styles.extra = /my/custom/vmd/style-fixes.css
 ```
 
- - `zoom` is the zoom factor. If you prefer the text in vmd to be bigger you
-   can change this to a higher value, like 1.25.
-
- - `document` is the default document name. This is the file that vmd will try
-   to open if you start vmd without providing a path to a document, i.e. if you
-   just type `vmd`.
-
-If you have configured a nice zoom factor but changed your mind just for this
-particular time you can override the settings using command-line arguments.
-Like this: `vmd --zoom=2 MYFILE.md`
+Options provided as command-line arguments will always have precedence over the
+values in the configuration file. So `--zoom=1.5` will set the zoom factor to
+1.5 regardless of what's in the config file.
 
 ## Authors
+
 - [Yoshua Wuyts](https://github.com/yoshuawuyts)
 - [Max Kueng](https://github.com/maxkueng)
 
 ## License
+
 [MIT](https://tldrlegal.com/license/mit-license)
 
 [npm-image]: https://img.shields.io/npm/v/vmd.svg?style=flat-square
