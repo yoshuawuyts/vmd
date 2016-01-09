@@ -9,7 +9,7 @@ same as on GitHub.
 
 [Features](#features) | [Installation](#installation) | [Usage](#usage) | [Examples](#examples) | [Command-line options](#options) | [Configuration](#configuration)
 
-![screenshot](./docs/screenshot.png)
+![screenshot](https://raw.githubusercontent.com/yoshuawuyts/vmd/master/docs/screenshot.png)
 
 ## Features
 
