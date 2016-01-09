@@ -41,6 +41,8 @@ same as on GitHub.
     - [ ] List item 1
     - [x] List item 2
    ```
+    - [ ] List item 1
+    - [x] List item 2
 
  - **Customization:** Select different themes and provide your own styles to
    make vmd look the way you want. Take a look at the [Options](#options) for
