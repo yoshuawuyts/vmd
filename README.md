@@ -7,7 +7,44 @@
 Preview markdown files in a separate window. Markdown is formatted exactly the
 same as on GitHub.
 
+[Features](#features) | [Installation](#installation) | [Usage](#usage) | [Examples](#examples) | [Command-line options](#options) | [Configuration](#configuration)
+
 ![screenshot](./docs/screenshot.png)
+
+## Features
+
+ - **GitHub style:** The markdown content is rendered as close to the way it's
+   rendered on GitHub as possible.
+
+ - **File watching:** Local files opened in vmd are watched for changes and the
+   viewer will automatically update when a file has been changed. This makes it
+   ideal for writing documents in your favorite text editor and get a live
+   preview.
+
+ - **Standard input:** View any markdown text from other programs by piping
+   another program's output in to vmd.
+
+ - **Navigation:** Navigate within linked sections in a document, open relative
+   links to other documents in the same window or in a new one (`shift-click`),
+   and always be able to go back in the history. And open links to directories
+   in your file manager and external links in your default browser.
+
+ - **Clipboard:** Copy links and local file paths to the clipboard, and even
+   copy images in binary format to paste them in to your image editing
+   software.
+
+ - **Emoji:** :bowtie: Displays emoji, such as `:sweat_drops:`. Take a look at the
+   [Emoji Cheat Sheet][emoji-cheat-sheet] for a list of available emoji.
+
+ - **Checklists:** Renders GitHub-style checklists.
+   ```
+    - [ ] List item 1
+    - [x] List item 2
+   ```
+
+ - **Customization:** Select different themes and provide your own styles to
+   make vmd look the way you want. Take a look at the [Options](#options) for
+   an overview of available customization options.
 
 ## Installation
 
@@ -127,3 +164,4 @@ values in the configuration file. So `--zoom=1.5` will set the zoom factor to
 [downloads-url]: https://npmjs.org/package/vmd
 [standard-image]: https://img.shields.io/badge/code%20style-standard-brightgreen.svg?style=flat-square
 [standard-url]: https://github.com/feross/standard
+[emoji-cheat-sheet]: http://www.emoji-cheat-sheet.com/
