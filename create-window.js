@@ -51,10 +51,9 @@ module.exports = function createWindow (options) {
 
   function onOpenFile (ev, filePath) {
     if (ev.sender === win.webContents) {
-      createWindow({
-        filePath: filePath,
-        devTools: options.devTools
-      })
+      createWindow(assign({}, options, {
+        filePath: filePath
+      }))
     }
   }
 
