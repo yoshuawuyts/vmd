@@ -1,11 +1,14 @@
 /*global vmd:true*/
 
+const assign = require('object-assign')
+
 const electron = {
-  ipc: require('electron').ipcRenderer
+  ipc: require('electron').ipcRenderer,
+  sharedState: require('electron').remote.require('./shared-state')
 }
 
 // no var/let/const on purpose
-vmd = {
+vmd = assign({
   changeFile: function (filePath) {
     electron.ipc.send('change-file', filePath)
   },
@@ -52,4 +55,4 @@ vmd = {
   onContent: function (callback) {
     vmd.on('md', callback)
   }
-}
+}, electron.sharedState)
