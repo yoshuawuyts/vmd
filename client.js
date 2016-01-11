@@ -12,8 +12,16 @@ const nativeImage = remote.nativeImage
 const conf = remote.getGlobal('conf')
 const currentWindow = remote.getCurrentWindow()
 const renderMarkdown = require('./render-markdown')
+const createMenu = require('./create-menu')
 const hist = require('./history')()
 const zoom = require('./zoom')(conf.zoom)
+
+hist.subscribe(function () {
+  vmd.setHistoryStatus(currentWindow.id, {
+    canGoBack: hist.canGoBack(),
+    canGoForward: hist.canGoForward()
+  })
+})
 
 function isMarkdownPath (filePath) {
   // http://superuser.com/questions/249436/file-extension-for-markdown-files
@@ -224,6 +232,20 @@ function handleLink (ev) {
   }
 }
 
+function updateSelection () {
+  var selection = window.getSelection()
+
+  if (selection) {
+    var str = selection.toString()
+
+    if (str) {
+      return vmd.setSelection(currentWindow.id, selection.toString())
+    }
+  }
+
+  vmd.clearSelection(currentWindow.id)
+}
+
 vmd.onPrintAction(function () {
   window.print()
 })
@@ -274,105 +296,89 @@ window.addEventListener('keydown', function (ev) {
   if (esc) currentWindow.close()
 })
 
-const contextMenu = {
-  items: [
-    {
-      item: new MenuItem({
-        label: 'Open folder',
-        click: function () {
-          var link = getLinkType(findClosestLink(contextMenu.getElement()))
-          return link && shell.openItem(link.path)
-        }
-      }),
-      visible: function (item) {
-        var link = getLinkType(findClosestLink(contextMenu.getElement()))
-        return link && link.type === 'directory'
-      }
-    },
-    {
-      item: new MenuItem({
-        label: 'Open file',
-        click: function () {
-          var link = getLinkType(findClosestLink(contextMenu.getElement()))
+window.addEventListener('mouseup', function (ev) {
+  updateSelection()
+})
 
-          if (link && link.type === 'file') {
-            return link && shell.openItem(link.path)
-          }
+window.addEventListener('keyup', function (ev) {
+  updateSelection()
+})
 
-          if (link && link.type === 'markdown-file') {
-            return navigateTo(hist.push({
-              filePath: link.path
-            }))
-          }
-        }
-      }),
-      visible: function (item) {
-        var link = getLinkType(findClosestLink(contextMenu.getElement()))
-        return link && (link.type === 'file' || link.type === 'markdown-file')
+setInterval(function () {
+  updateSelection()
+}, 1000)
+
+function addContextMenu () {
+  var template = [
+    {
+      label: 'Open folder',
+      click: function (model) {
+        return model.link && shell.openItem(model.link.path)
+      },
+      visible: function (model) {
+        return model.link && model.link.type === 'directory'
       }
     },
     {
-      item: new MenuItem({
-        label: 'Open image',
-        click: function () {
-          var img = getLinkType(findClosestImage(contextMenu.getElement()))
-          return img && shell.openItem(img.path)
+      label: 'Open file',
+      click: function (model) {
+        if (model.link && model.link.type === 'file') {
+          return model.link && shell.openItem(model.link.path)
         }
-      }),
-      visible: function (item) {
-        var img = getLinkType(findClosestImage(contextMenu.getElement()))
-        return img && img.type === 'file'
-      }
-    },
-    {
-      item: new MenuItem({
-        label: 'Open file in new window',
-        click: function () {
-          var link = getLinkType(findClosestLink(contextMenu.getElement()))
-          return link && vmd.openFile(link.path)
-        }
-      }),
-      visible: function (item) {
-        var link = getLinkType(findClosestLink(contextMenu.getElement()))
-        return link && link.type === 'markdown-file'
-      }
-    },
-    {
-      item: new MenuItem({
-        label: 'Scroll to anchor',
-        click: function () {
-          var link = getLinkType(findClosestLink(contextMenu.getElement()))
-          return link && navigateTo(hist.push({
-            filePath: link.path,
-            hash: link.hash
+
+        if (model.link && model.link.type === 'markdown-file') {
+          return navigateTo(hist.push({
+            filePath: model.link.path
           }))
         }
-      }),
-      visible: function (item) {
-        var link = getLinkType(findClosestLink(contextMenu.getElement()))
-        return link && link.type === 'hash'
+      },
+      visible: function (model) {
+        return model.link && (model.link.type === 'file' || model.link.type === 'markdown-file')
       }
     },
     {
-      item: new MenuItem({
-        label: 'Open link',
-        click: function () {
-          var link = getLinkType(findClosestLink(contextMenu.getElement()))
-          return link && shell.openExternal(link.href)
-        }
-      }),
-      visible: function (item) {
-        var link = getLinkType(findClosestLink(contextMenu.getElement()))
-        return link && link.type === 'external'
+      label: 'Open image',
+      click: function (model) {
+        return model.img && shell.openItem(model.img.path)
+      },
+      visible: function (model) {
+        return model.img && model.img.type === 'file'
       }
     },
     {
-      item: new MenuItem({
-        type: 'separator'
-      }),
-      visible: function (item) {
-        var link = getLinkType(findClosestLink(contextMenu.getElement()))
-        return link !== null
+      label: 'Open file in new window',
+      click: function (model) {
+        return model.link && vmd.openFile(model.link.path)
+      },
+      visible: function (model) {
+        return model.link && model.link.type === 'markdown-file'
+      }
+    },
+    {
+      label: 'Scroll to anchor',
+      click: function (model) {
+        return model.link && navigateTo(hist.push({
+          filePath: model.link.path,
+          hash: model.link.hash
+        }))
+      },
+      visible: function (model) {
+        return model.link && model.link.type === 'hash'
+      }
+    },
+    {
+      label: 'Open link',
+      click: function (model) {
+        return model.link && shell.openExternal(model.link.href)
+      },
+      visible: function (model) {
+        return model.link && model.link.type === 'external'
+      }
+    },
+    {
+      type: 'separator',
+      visible: function (model) {
+        return !!model.link
       }
     },
     {
@@ -380,161 +386,96 @@ const contextMenu = {
         label: 'Copy',
         role: 'copy'
       }),
-      visible: function (item) {
-        var selection = window.getSelection()
-        return selection && selection.toString() !== ''
+      visible: function (model) {
+        return !!model.selection
       }
     },
     {
-      item: new MenuItem({
-        label: 'Copy link address',
-        click: function () {
-          var link = getLinkType(findClosestLink(contextMenu.getElement()))
-          return link && clipboard.writeText(link.href)
-        }
-      }),
-      visible: function (item) {
-        var link = getLinkType(findClosestLink(contextMenu.getElement()))
-        return link && link.type === 'external'
+      label: 'Copy link address',
+      click: function (model) {
+        return model.link && clipboard.writeText(model.link.href)
+      },
+      visible: function (model) {
+        return model.link && model.link.type === 'external'
       }
     },
     {
-      item: new MenuItem({
-        label: 'Copy image address',
-        click: function () {
-          var img = getLinkType(findClosestImage(contextMenu.getElement()))
-          return img && clipboard.writeText(img.href)
-        }
-      }),
-      visible: function (item) {
-        var img = getLinkType(findClosestImage(contextMenu.getElement()))
-        return img && img.type === 'external'
+      label: 'Copy image address',
+      click: function (model) {
+        return model.img && clipboard.writeText(model.img.href)
+      },
+      visible: function (model) {
+        return model.img && model.img.type === 'external'
       }
     },
     {
-      item: new MenuItem({
-        label: 'Copy path',
-        click: function () {
-          var link = getLinkType(findClosestLink(contextMenu.getElement()))
-          return link && clipboard.writeText(link.path)
-        }
-      }),
-      visible: function (item) {
-        var link = getLinkType(findClosestLink(contextMenu.getElement()))
+      label: 'Copy path',
+      click: function (model) {
+        return model.link && clipboard.writeText(model.link.path)
+      },
+      visible: function (model) {
         var types = [
           'directory',
           'file',
           'markdown-file'
         ]
-        return link && types.indexOf(link.type) !== -1
+        return model.link && types.indexOf(model.link.type) !== -1
       }
     },
     {
-      item: new MenuItem({
-        label: 'Copy image path',
-        click: function () {
-          var img = getLinkType(findClosestImage(contextMenu.getElement()))
-          return img && clipboard.writeText(img.path)
-        }
-      }),
-      visible: function (item) {
-        var img = getLinkType(findClosestImage(contextMenu.getElement()))
-        return img && img.type === 'file'
+      label: 'Copy image path',
+      click: function (model) {
+        return model.img && clipboard.writeText(model.img.path)
+      },
+      visible: function (model) {
+        return model.img && model.img.type === 'file'
       }
     },
     {
-      item: new MenuItem({
-        label: 'Copy image',
-        click: function () {
-          var img = getLinkType(findClosestImage(contextMenu.getElement()))
-          return img && copyImageToClipboard(img)
-        }
-      }),
-      visible: function (item) {
-        var img = getLinkType(findClosestImage(contextMenu.getElement()))
-        return !!img
+      label: 'Copy image',
+      click: function (model) {
+        return model.img && copyImageToClipboard(model.img)
+      },
+      visible: function (model) {
+        return !!model.img
       }
     },
     {
-      item: new MenuItem({
-        label: 'Select All',
-        role: 'selectall'
-      })
+      label: 'Select All',
+      role: 'selectall'
     },
     {
-      item: new MenuItem({
-        type: 'separator'
-      })
+      type: 'separator'
     },
     {
-      item: new MenuItem({
-        label: 'Reload',
-        click: function () {
-          currentWindow.reload()
-        }
-      })
-    },
-    {
-      item: new MenuItem({
-        type: 'separator'
-      })
-    },
-    {
-      item: new MenuItem({
-        label: 'Inspect Element',
-        click: function () {
-          currentWindow.inspectElement(
-            contextMenu.position.x,
-            contextMenu.position.y
-          )
-        }
-      })
-    }
-  ],
-
-  init: function () {
-    contextMenu.menu = new Menu()
-
-    contextMenu.items.forEach(function (item) {
-      contextMenu.menu.append(item.item)
-    })
-
-    contextMenu.update()
-  },
-
-  update: function (ev) {
-    if (ev) {
-      contextMenu.position = {
-        x: ev.x,
-        y: ev.y
+      label: 'Inspect Element',
+      click: function (model, item, win) {
+        win && win.inspectElement(model.x, model.y)
       }
     }
+  ]
 
-    contextMenu.items.forEach(function (item) {
-      if (typeof item.visible === 'function') {
-        item.item.visible = item.visible(item, ev)
-      }
+  var contextMenu = createMenu(template, {})
 
-      if (typeof item.enabled === 'function') {
-        item.item.enabled = item.enabled(item, ev)
-      }
+  window.addEventListener('contextmenu', function (ev) {
+    ev.preventDefault()
+
+    var selection = window.getSelection()
+    var selectionText = selection && selection.toString()
+
+    var el = document.elementFromPoint(ev.x, ev.y) || null
+
+    contextMenu.update({
+      x: ev.x,
+      y: ev.y,
+      selection: selectionText,
+      element: el,
+      link: getLinkType(findClosestLink(el)),
+      img: getLinkType(findClosestImage(el))
     })
-  },
 
-  getElement: function () {
-    if (!contextMenu.position) { return null }
-    return document.elementFromPoint(contextMenu.position.x, contextMenu.position.y) || null
-  },
-
-  show: function (ev) {
-    contextMenu.update(ev)
-    contextMenu.menu.popup(currentWindow)
-  }
+    contextMenu.getMenu().popup(currentWindow)
+  }, false)
 }
 
-contextMenu.init()
-
-window.addEventListener('contextmenu', function (ev) {
-  ev.preventDefault()
-  contextMenu.show(ev)
-}, false)
+addContextMenu()
