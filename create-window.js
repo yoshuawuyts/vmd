@@ -4,6 +4,7 @@ const BrowserWindow = require('electron').BrowserWindow
 const ipc = require('electron').ipcMain
 const chokidar = require('chokidar')
 const assign = require('object-assign')
+const sharedState = require('./shared-state')
 const styles = require('./styles')
 
 const defaultOptions = {
@@ -36,6 +37,14 @@ module.exports = function createWindow (options) {
   win.on('closed', function () {
     win = null
   })
+
+  win.on('focus', function () {
+    sharedState.setFocusedWindow(win.id)
+  })
+
+  if (win.isFocused()) {
+    sharedState.setFocusedWindow(win.id)
+  }
 
   if (options.devTools) {
     win.openDevTools()

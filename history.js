@@ -3,6 +3,7 @@ const deepEqual = require('deep-equal')
 module.exports = function () {
   var history = []
   var currentPosition = null
+  var listeners = []
 
   function cut () {
     if (currentPosition !== null) {
@@ -24,6 +25,7 @@ module.exports = function () {
       currentPosition += 1
     }
 
+    process.nextTick(notifyListeners)
     return current()
   }
 
@@ -54,6 +56,7 @@ module.exports = function () {
       currentPosition = 0
     }
 
+    process.nextTick(notifyListeners)
     return current()
   }
 
@@ -68,6 +71,7 @@ module.exports = function () {
       currentPosition = history.length - 1
     }
 
+    process.nextTick(notifyListeners)
     return current()
   }
 
@@ -79,12 +83,34 @@ module.exports = function () {
     return history[currentPosition]
   }
 
+  function subscribe (listener) {
+    listeners.push(listener)
+    var isSubscribed = true
+
+    return function unsubscribe () {
+      if (!isSubscribed) {
+        return
+      }
+
+      isSubscribed = false
+      var index = listeners.indexOf(listener)
+      listeners.splice(index, 1)
+    }
+  }
+
+  function notifyListeners () {
+    listeners.slice().forEach(function (listener) {
+      listener()
+    })
+  }
+
   return {
     push: push,
     canGoBack: canGoBack,
     canGoForward: canGoForward,
     back: back,
     forward: forward,
-    current: current
+    current: current,
+    subscribe: subscribe
   }
 }

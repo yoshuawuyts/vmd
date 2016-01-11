@@ -8,6 +8,8 @@ const pkg = require('./package.json')
 const createWindow = require('./create-window')
 const conf = global.conf = require('./config')
 const styles = require('./styles')
+const sharedState = require('./shared-state')
+const createMenu = require('./create-menu')
 
 if (conf.help) {
   console.log(fs.readFileSync(__dirname + '/usage.txt', 'utf-8'))
@@ -146,8 +148,8 @@ function addApplicationMenu () {
         {
           label: 'Print',
           accelerator: 'CmdOrCtrl+P',
-          click: function (item, win) {
-            win.webContents.send('print')
+          click: function (model, item, win) {
+            win && win.webContents.send('print')
           }
         }
       ]
@@ -158,7 +160,10 @@ function addApplicationMenu () {
         {
           label: 'Copy',
           accelerator: 'CmdOrCtrl+C',
-          role: 'copy'
+          role: 'copy',
+          enabled: function (model) {
+            return model && !!model.selection
+          }
         },
         {
           label: 'Select All',
@@ -173,15 +178,21 @@ function addApplicationMenu () {
         {
           label: 'Back',
           accelerator: 'Alt+Left',
-          click: function (item, win) {
-            win.webContents.send('history-back')
+          click: function (model, item, win) {
+            win && win.webContents.send('history-back')
+          },
+          enabled: function (model) {
+            return model.history && model.history.canGoBack
           }
         },
         {
           label: 'Forward',
           accelerator: 'Alt+Right',
-          click: function (item, win) {
-            win.webContents.send('history-forward')
+          click: function (model, item, win) {
+            win && win.webContents.send('history-forward')
+          },
+          enabled: function (model) {
+            return model.history && model.history.canGoForward
           }
         }
       ]
@@ -192,22 +203,22 @@ function addApplicationMenu () {
         {
           label: 'Zoom In',
           accelerator: 'CmdOrCtrl+Plus',
-          click: function (item, win) {
-            win.webContents.send('zoom-in')
+          click: function (model, item, win) {
+            win && win.webContents.send('zoom-in')
           }
         },
         {
           label: 'Zoom Out',
           accelerator: 'CmdOrCtrl+-',
-          click: function (item, win) {
-            win.webContents.send('zoom-out')
+          click: function (model, item, win) {
+            win && win.webContents.send('zoom-out')
           }
         },
         {
           label: 'Reset Zoom',
           accelerator: 'CmdOrCtrl+0',
-          click: function (item, win) {
-            win.webContents.send('zoom-reset')
+          click: function (model, item, win) {
+            win && win.webContents.send('zoom-reset')
           }
         },
         {
@@ -219,15 +230,19 @@ function addApplicationMenu () {
               return 'Ctrl+Shift+I'
             }
           })(),
-          click: function (item, focusedWindow) {
-            if (focusedWindow) {
-              focusedWindow.toggleDevTools()
-            }
+          click: function (model, item, win) {
+            win && win.toggleDevTools()
           }
         }
       ]
     }
   ]
 
-  Menu.setApplicationMenu(Menu.buildFromTemplate(template))
+  var menu = createMenu(template, {})
+
+  sharedState.subscribe(function () {
+    menu.update(sharedState.getFocusedWindowState() || {})
+  })
+
+  Menu.setApplicationMenu(menu.getMenu())
 }
