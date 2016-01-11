@@ -107,7 +107,7 @@ function navigateTo (item) {
   }
 
   if (item.filePath) {
-    vmd.changeFile(item.filePath)
+    vmd.setFilePath(currentWindow.id, item.filePath)
   }
 }
 

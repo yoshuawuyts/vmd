@@ -29,6 +29,14 @@ const actions = {
     }))
   },
 
+  setFilePath: function (windowId, filePath) {
+    store.dispatch(focusedWindowAction({
+      type: 'SET_FILE_PATH',
+      windowId: windowId,
+      filePath: filePath
+    }))
+  },
+
   setSelection: function (windowId, selection) {
     store.dispatch(focusedWindowAction({
       type: 'SET_SELECTION',
@@ -80,6 +88,11 @@ function win (state, action) {
   }
 
   switch (action.type) {
+    case 'SET_FILE_PATH':
+      return assign({}, state, {
+        filePath: action.filePath
+      })
+
     case 'SET_HISTORY_STATUS':
       return assign({}, state, {
         history: {
@@ -109,6 +122,7 @@ function windows (state, action) {
   }
 
   switch (action.type) {
+    case 'SET_FILE_PATH':
     case 'SET_SELECTION':
     case 'CLEAR_SELECTION':
     case 'SET_HISTORY_STATUS':

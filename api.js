@@ -9,10 +9,6 @@ const electron = {
 
 // no var/let/const on purpose
 vmd = assign({
-  changeFile: function (filePath) {
-    electron.ipc.send('change-file', filePath)
-  },
-
   openFile: function (filePath) {
     electron.ipc.send('open-file', filePath)
   },
