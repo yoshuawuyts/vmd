@@ -302,6 +302,28 @@ window.addEventListener('keyup', function (ev) {
   updateSelection()
 })
 
+document.addEventListener('drop', function (ev) {
+  ev.preventDefault()
+  ev.stopPropagation()
+
+  var filePath = ev.dataTransfer.files.length && ev.dataTransfer.files[0].path
+
+  if (!filePath || !isMarkdownPath(filePath)) {
+    return
+  }
+
+  if (ev.shiftKey) {
+    return vmd.openFile(filePath)
+  }
+
+  vmd.setFilePath(currentWindow.id, filePath)
+})
+
+document.addEventListener('dragover', function (ev) {
+  ev.preventDefault()
+  ev.stopPropagation()
+});
+
 setInterval(function () {
   updateSelection()
 }, 1000)
