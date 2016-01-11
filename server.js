@@ -73,7 +73,7 @@ app.on('ready', function () {
   if (!fromFile) {
     getStdin()
       .then(function (body) {
-        createWindow(createWindow(false, body.toString()))
+        createWindow(createWindowOptions(false, body.toString()))
       })
   } else {
     createWindow(createWindowOptions(true, filePath))
@@ -92,7 +92,7 @@ function createWindowOptions (fromFile, fileOrContent) {
   if (fromFile) {
     windowOptions.filePath = fileOrContent
   } else {
-    windowOptions.content = fileOrContent
+    windowOptions.contents = fileOrContent
   }
 
   return windowOptions
