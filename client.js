@@ -5,8 +5,6 @@ const url = remote.require('url')
 const path = remote.require('path')
 const fs = remote.require('fs')
 const shell = remote.shell
-const Menu = remote.Menu
-const MenuItem = remote.MenuItem
 const clipboard = remote.clipboard
 const nativeImage = remote.nativeImage
 const conf = remote.getGlobal('conf')
@@ -382,10 +380,8 @@ function addContextMenu () {
       }
     },
     {
-      item: new MenuItem({
-        label: 'Copy',
-        role: 'copy'
-      }),
+      label: 'Copy',
+      role: 'copy',
       visible: function (model) {
         return !!model.selection
       }
