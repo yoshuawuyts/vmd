@@ -322,7 +322,7 @@ document.addEventListener('drop', function (ev) {
 document.addEventListener('dragover', function (ev) {
   ev.preventDefault()
   ev.stopPropagation()
-});
+})
 
 setInterval(function () {
   updateSelection()
