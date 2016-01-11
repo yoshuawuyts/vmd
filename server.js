@@ -86,7 +86,7 @@ function createWindowOptions (fromFile, fileOrContent) {
     mainStylesheet: conf.get('styles.main'),
     extraStylesheet: conf.get('styles.extra'),
     highlightTheme: conf.get('highlight.theme'),
-    highlightStylesheet: conf.get('highlight.stylesheet'),
+    highlightStylesheet: conf.get('highlight.stylesheet')
   }
 
   if (fromFile) {
@@ -125,7 +125,7 @@ function openFileDialog (win, openInNewWindow) {
     filters: [
       {
         name: 'Markdown',
-        extensions: markdownExtensions,
+        extensions: markdownExtensions
       },
       {
         name: 'Al files',
