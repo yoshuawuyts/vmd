@@ -25,6 +25,10 @@ same as on GitHub.
    another program's output in to vmd. Check out the [examples](#examples) for
    cool use cases.
 
+ - **Drag & Drop:** Drag files from your file browser or desktop on to a vmd
+   window and render it. Hold the `Shift` key while dropping to open the file
+   in a new window.
+
  - **Navigation:** Navigate within linked sections in a document, open relative
    links to other documents in the same window or in a new one (`shift-click`),
    and always be able to go back in the history. And open links to directories
