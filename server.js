@@ -2,6 +2,7 @@ const fs = require('fs')
 const path = require('path')
 const url = require('url')
 const app = require('electron').app
+const dialog = require('electron').dialog
 const Menu = require('electron').Menu
 const getStdin = require('get-stdin')
 const pkg = require('./package.json')
@@ -10,6 +11,8 @@ const conf = global.conf = require('./config')
 const styles = require('./styles')
 const sharedState = require('./shared-state')
 const createMenu = require('./create-menu')
+
+const markdownExtensions = [ 'markdown', 'mdown', 'mkdn', 'md', 'mkd', 'mdwn', 'mdtxt', 'mdtext' ]
 
 if (conf.help) {
   console.log(fs.readFileSync(__dirname + '/usage.txt', 'utf-8'))
@@ -67,25 +70,33 @@ app.on('ready', function () {
   registerEmojiProtocol()
   addApplicationMenu()
 
+  if (!fromFile) {
+    getStdin()
+      .then(function (body) {
+        createWindow(createWindow(false, body.toString()))
+      })
+  } else {
+    createWindow(createWindowOptions(true, filePath))
+  }
+})
+
+function createWindowOptions (fromFile, fileOrContent) {
   var windowOptions = {
     devTools: conf.devtools,
     mainStylesheet: conf.get('styles.main'),
     extraStylesheet: conf.get('styles.extra'),
     highlightTheme: conf.get('highlight.theme'),
-    highlightStylesheet: conf.get('highlight.stylesheet')
+    highlightStylesheet: conf.get('highlight.stylesheet'),
   }
 
-  if (!fromFile) {
-    getStdin()
-      .then(function (body) {
-        windowOptions.contents = body.toString()
-        createWindow(windowOptions)
-      })
+  if (fromFile) {
+    windowOptions.filePath = fileOrContent
   } else {
-    windowOptions.filePath = filePath
-    createWindow(windowOptions)
+    windowOptions.content = fileOrContent
   }
-})
+
+  return windowOptions
+}
 
 function registerEmojiProtocol () {
   const protocol = require('electron').protocol
@@ -105,6 +116,35 @@ function registerEmojiProtocol () {
       }
     }
   )
+}
+
+function openFileDialog (win, openInNewWindow) {
+  var dialogOptions = {
+    title: 'Select markdown file',
+    properties: [ 'openFile' ],
+    filters: [
+      {
+        name: 'Markdown',
+        extensions: markdownExtensions,
+      },
+      {
+        name: 'Al files',
+        extensions: [ '*' ]
+      }
+    ]
+  }
+
+  win && dialog.showOpenDialog(win, dialogOptions, function (filePaths) {
+    if (!Array.isArray(filePaths) || !filePaths.length) {
+      return
+    }
+
+    if (!openInNewWindow) {
+      return sharedState.setFilePath(win.id, filePaths[0])
+    }
+
+    createWindow(createWindowOptions(true, filePaths[0]))
+  })
 }
 
 function addApplicationMenu () {
@@ -145,6 +185,20 @@ function addApplicationMenu () {
     {
       label: 'File',
       submenu: [
+        {
+          label: 'Open',
+          accelerator: 'CmdOrCtrl+O',
+          click: function (model, item, win) {
+            openFileDialog(win, false)
+          }
+        },
+        {
+          label: 'Open in new window',
+          accelerator: 'CmdOrCtrl+Shift+O',
+          click: function (model, item, win) {
+            openFileDialog(win, true)
+          }
+        },
         {
           label: 'Print',
           accelerator: 'CmdOrCtrl+P',

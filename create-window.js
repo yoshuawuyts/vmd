@@ -55,8 +55,19 @@ module.exports = function createWindow (options) {
     watcher.on('change', sendMarkdown)
   }
 
-  ipc.on('change-file', onChangeFile)
   ipc.on('open-file', onOpenFile)
+
+  sharedState.subscribe(function () {
+    if (!win) {
+      return
+    }
+
+    var state = sharedState.getWindowState(win.id)
+
+    if (state && state.filePath && state.filePath !== options.filePath) {
+      changeFile(state.filePath)
+    }
+  })
 
   function onOpenFile (ev, filePath) {
     if (ev.sender === win.webContents) {
@@ -66,18 +77,11 @@ module.exports = function createWindow (options) {
     }
   }
 
-  function onChangeFile (ev, filePath) {
-    if (ev.sender === win.webContents) {
-      changeFile(filePath)
-    }
-  }
-
   function onClose () {
     if (watcher) {
       watcher.close()
     }
 
-    ipc.removeListener('change-file', onChangeFile)
     ipc.removeListener('open-file', onOpenFile)
   }
 
