@@ -4,7 +4,7 @@ const assign = require('object-assign')
 
 const electron = {
   ipc: require('electron').ipcRenderer,
-  sharedState: require('electron').remote.require('./shared-state')
+  sharedState: require('electron').remote.require('../shared/shared-state')
 }
 
 // no var/let/const on purpose
