@@ -4,7 +4,7 @@ const BrowserWindow = require('electron').BrowserWindow
 const ipc = require('electron').ipcMain
 const chokidar = require('chokidar')
 const assign = require('object-assign')
-const sharedState = require('./shared-state')
+const sharedState = require('../shared/shared-state')
 const styles = require('./styles')
 
 const defaultOptions = {
@@ -18,7 +18,7 @@ module.exports = function createWindow (options) {
   const fromFile = typeof options.filePath !== 'undefined'
   var watcher
 
-  var preloadPath = path.resolve(__dirname, 'api.js')
+  var preloadPath = path.resolve(__dirname, 'client-api.js')
 
   var win = new BrowserWindow({
     preload: preloadPath,
@@ -30,7 +30,7 @@ module.exports = function createWindow (options) {
   updateTitle()
 
   temporarilyInterceptFileProtocol()
-  win.loadURL('file://' + __dirname + '/vmd')
+  win.loadURL('file://' + __dirname + '/../renderer/vmd.html')
   win.on('close', onClose)
   win.webContents.on('did-finish-load', sendMarkdown)
 
@@ -129,17 +129,17 @@ module.exports = function createWindow (options) {
   }
 
   function temporarilyInterceptFileProtocol () {
-    // very hacky way to dynamically create index.html
+    // very hacky way to dynamically create vmd.html
     const protocol = require('electron').protocol
     const template = require('lodash.template')
-    const indexHtml = template(fs.readFileSync(path.join(__dirname, 'index.html'), { encoding: 'utf-8' }))
+    const indexHtml = template(fs.readFileSync(path.join(__dirname, '..', 'renderer', 'vmd.html'), { encoding: 'utf-8' }))
 
     protocol.interceptStringProtocol(
       'file',
       function (req, callback) {
         var mainStyle = options.mainStylesheet
           ? styles.getStylesheet(options.mainStylesheet)
-          : styles.getStylesheet(path.resolve(__dirname, './node_modules/github-markdown-css/github-markdown.css'))
+          : styles.getStylesheet(path.resolve(__dirname, '../node_modules/github-markdown-css/github-markdown.css'))
 
         var extraStyle = options.extraStylesheet
           ? styles.getStylesheet(options.extraStylesheet)

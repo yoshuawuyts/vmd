@@ -2,7 +2,7 @@
 const spawn = require('child_process').spawn
 const electron = require('electron-prebuilt')
 const path = require('path')
-const serverPath = path.join(__dirname, '../server.js')
+const serverPath = path.join(__dirname, '../main/main.js')
 
 var args = [ serverPath ].concat([].concat(process.argv).splice(2))
 

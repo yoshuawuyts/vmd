@@ -10,7 +10,7 @@ const nativeImage = remote.nativeImage
 const conf = remote.getGlobal('conf')
 const currentWindow = remote.getCurrentWindow()
 const renderMarkdown = require('./render-markdown')
-const createMenu = require('./create-menu')
+const createMenu = require('../shared/create-menu')
 const hist = require('./history')()
 const zoom = require('./zoom')(conf.zoom)
 

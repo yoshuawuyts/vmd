@@ -2,7 +2,7 @@
   "name": "vmd",
   "version": "1.24.1",
   "description": "vmd",
-  "main": "server.js",
+  "main": "main/main.js",
   "scripts": {
     "test": "standard"
   },
