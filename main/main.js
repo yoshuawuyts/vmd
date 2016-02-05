@@ -83,6 +83,7 @@ app.on('ready', function () {
 function createWindowOptions (fromFile, fileOrContent) {
   var windowOptions = {
     devTools: conf.devtools,
+    title: conf.title,
     mainStylesheet: conf.get('styles.main'),
     extraStylesheet: conf.get('styles.extra'),
     highlightTheme: conf.get('highlight.theme'),
