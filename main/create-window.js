@@ -86,9 +86,11 @@ module.exports = function createWindow (options) {
   }
 
   function updateTitle () {
-    var prefix = fromFile ? (path.basename(options.filePath) + ' - ') : ''
+    var prefix =
+      options.title ||
+      (fromFile && (path.basename(options.filePath)))
 
-    win.setTitle(prefix + 'vmd')
+    win.setTitle(prefix ? prefix + ' - vmd' : 'vmd')
 
     // (OS X) Set represented filename (icon in title bar)
     if (fromFile && process.platform === 'darwin') {

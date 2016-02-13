@@ -14,6 +14,8 @@ Options:
 
   -h, --help                       Show this help.
 
+  -t, --title=TITLE                Set window title.
+
   -d, --devtools                   Open developer tools.
 
   -z, --zoom=NUM                   Set the zoom factor. Default: 1
