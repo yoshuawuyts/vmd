@@ -23,6 +23,7 @@ exports.getHighlightTheme = function (theme) {
 
   try {
     return fs.readFileSync(themePath, 'utf-8')
+      .replace(/([^;]+);/g, '$1 !important;')
   } catch (ex) {
     console.error('Cannot load theme', theme + ':', ex.code === 'ENOENT' ? 'no such file' : ex.message)
     app.exit(1)
