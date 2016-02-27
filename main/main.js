@@ -15,7 +15,7 @@ const createMenu = require('../shared/create-menu')
 const markdownExtensions = [ 'markdown', 'mdown', 'mkdn', 'md', 'mkd', 'mdwn', 'mdtxt', 'mdtext' ]
 
 if (conf.help) {
-  console.log(fs.readFileSync(__dirname + '/usage.txt', 'utf-8'))
+  console.log(fs.readFileSync(path.join(__dirname, '..', 'usage.txt'), 'utf-8'))
   app.exit(0)
 }
 
