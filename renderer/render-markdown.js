@@ -55,6 +55,13 @@ marked.InlineLexer.prototype.output = function (src) {
   return unescapeEmoji(originalInlineOutput.call(this, escapeEmoji(src)))
 }
 
+var originalCodeRenderer = marked.Renderer.prototype.code
+
+renderer.code = function (code, language) {
+  var html = originalCodeRenderer.call(this, code, language)
+  return html.replace(/\<pre\>/, '<pre class="hljs">')
+}
+
 marked.setOptions({
   renderer: renderer,
   smartLists: true,

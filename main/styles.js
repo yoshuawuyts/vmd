@@ -1,6 +1,8 @@
 const path = require('path')
 const fs = require('fs')
 const app = require('electron').app
+const postcss = require('postcss')
+const postcssImportant = require('postcss-safe-important')
 
 exports.getHighlightThemes = function () {
   var themesPath = path.resolve(require.resolve('highlight.js'), '../..', 'styles')
@@ -22,7 +24,8 @@ exports.getHighlightTheme = function (theme) {
   var themePath = path.resolve(require.resolve('highlight.js'), '../..', 'styles', theme + '.css')
 
   try {
-    return fs.readFileSync(themePath, 'utf-8')
+    var themeStyles = fs.readFileSync(themePath, 'utf-8')
+    return postcss(postcssImportant).process(themeStyles).css
   } catch (ex) {
     console.error('Cannot load theme', theme + ':', ex.code === 'ENOENT' ? 'no such file' : ex.message)
     app.exit(1)
