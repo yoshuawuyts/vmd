@@ -29,6 +29,8 @@
     "lodash.template": "^3.6.2",
     "marked": "^0.3.3",
     "object-assign": "^4.0.1",
+    "postcss": "^5.0.17",
+    "postcss-safe-important": "^1.0.4",
     "redux": "^3.0.5",
     "rucola": "^1.1.3"
   },
