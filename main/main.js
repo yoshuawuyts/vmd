@@ -44,7 +44,7 @@ if (conf.get('list.highlight.themes')) {
   app.exit(0)
 }
 
-const filePath = conf._[0] || (process.stdin.isTTY ? conf.document : null)
+var filePath = conf._[0] || (process.stdin.isTTY ? conf.document : null)
 const fromFile = !!filePath
 
 if (fromFile) {
@@ -56,8 +56,13 @@ if (fromFile) {
       app.exit(1)
     }
   } catch (ex) {
-    console.error('Cannot open', filePath + ':', ex.code === 'ENOENT' ? 'no such file' : ex.message)
-    app.exit(1)
+    if (ex.code === 'ENOENT') {
+      // use default window since no file was provided
+      filePath = path.join(__dirname, '..', 'renderer', 'default.md')
+    } else {
+      console.error('Cannot open', filePath + ':', ex.message)
+      app.exit(1)
+    }
   }
 }
 
