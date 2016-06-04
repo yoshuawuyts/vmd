@@ -21,7 +21,7 @@
   "dependencies": {
     "chokidar": "^1.4.1",
     "deep-equal": "^1.0.1",
-    "electron-prebuilt": "^0.36.3",
+    "electron-prebuilt": "1.2.1",
     "emojify.js": "^1.1.0",
     "get-stdin": "^5.0.1",
     "github-markdown-css": "^2.1.1",

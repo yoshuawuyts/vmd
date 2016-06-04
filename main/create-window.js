@@ -21,7 +21,9 @@ module.exports = function createWindow (options) {
   var preloadPath = path.resolve(__dirname, 'client-api.js')
 
   var win = new BrowserWindow({
-    preload: preloadPath,
+    webPreferences: {
+      preload: preloadPath,
+    },
     icon: path.join(__dirname, 'resources/vmd.png'),
     width: options.width,
     height: options.height
