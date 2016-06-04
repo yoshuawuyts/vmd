@@ -22,7 +22,7 @@ module.exports = function createWindow (options) {
 
   var win = new BrowserWindow({
     webPreferences: {
-      preload: preloadPath,
+      preload: preloadPath
     },
     icon: path.join(__dirname, 'resources/vmd.png'),
     width: options.width,
