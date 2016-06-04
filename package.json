@@ -35,6 +35,6 @@
     "rucola": "^1.1.3"
   },
   "devDependencies": {
-    "standard": "^5.4.1"
+    "standard": "^7.1.2"
   }
 }

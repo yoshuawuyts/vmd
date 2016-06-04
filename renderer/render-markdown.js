@@ -59,7 +59,7 @@ var originalCodeRenderer = marked.Renderer.prototype.code
 
 renderer.code = function (code, language) {
   var html = originalCodeRenderer.call(this, code, language)
-  return html.replace(/\<pre\>/, '<pre class="hljs">')
+  return html.replace(/<pre>/, '<pre class="hljs">')
 }
 
 marked.setOptions({

@@ -32,7 +32,7 @@ module.exports = function createWindow (options) {
   updateTitle()
 
   temporarilyInterceptFileProtocol()
-  win.loadURL('file://' + __dirname + '/../renderer/vmd.html')
+  win.loadURL('file://' + path.join(__dirname, '/../renderer/vmd.html'))
   win.on('close', onClose)
   win.webContents.on('did-finish-load', sendMarkdown)
 
