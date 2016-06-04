@@ -1,6 +1,6 @@
 {
   "name": "vmd",
-  "version": "1.25.1",
+  "version": "1.26.0",
   "description": "vmd",
   "main": "main/main.js",
   "scripts": {
