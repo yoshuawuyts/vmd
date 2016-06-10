@@ -13,6 +13,7 @@ const sharedState = require('../shared/shared-state')
 const createMenu = require('../shared/create-menu')
 
 const markdownExtensions = [ 'markdown', 'mdown', 'mkdn', 'md', 'mkd', 'mdwn', 'mdtxt', 'mdtext' ]
+const defaultFilePath = path.join(__dirname, '..', 'renderer', 'default.md')
 
 if (conf.help) {
   console.log(fs.readFileSync(path.join(__dirname, '..', 'usage.txt'), 'utf-8'))
@@ -58,7 +59,7 @@ if (fromFile) {
   } catch (ex) {
     if (ex.code === 'ENOENT') {
       // use default window since no file was provided
-      filePath = path.join(__dirname, '..', 'renderer', 'default.md')
+      filePath = defaultFilePath
     } else {
       console.error('Cannot open', filePath + ':', ex.message)
       app.exit(1)
@@ -78,6 +79,10 @@ app.on('ready', function () {
   if (!fromFile) {
     getStdin()
       .then(function (body) {
+        if (!body) {
+          return createWindow(createWindowOptions(true, defaultFilePath))
+        }
+
         createWindow(createWindowOptions(false, body.toString()))
       })
   } else {
