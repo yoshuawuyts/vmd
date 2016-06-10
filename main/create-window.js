@@ -24,7 +24,7 @@ module.exports = function createWindow (options) {
     webPreferences: {
       preload: preloadPath
     },
-    icon: path.join(__dirname, 'resources/vmd.png'),
+    icon: path.join(__dirname, 'assets/app-icon/png/512.png'),
     width: options.width,
     height: options.height
   })
