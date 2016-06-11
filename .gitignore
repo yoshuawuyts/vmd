@@ -13,6 +13,7 @@ pids/
 logs/
 results/
 coverage/
+build/
 
 # node.js
 node_modules/

@@ -4,7 +4,16 @@
   "description": "vmd",
   "main": "main/main.js",
   "scripts": {
-    "test": "standard"
+    "start": "electron .",
+    "dev": "electron . --debug",
+    "test": "standard",
+    "pack-linux-ia32": "electron-packager . --asar --overwrite --platform=linux --arch=ia32 --icon=assets/app-icon/png/64.png --prune=true --out=build",
+    "pack-linux-x64": "electron-packager . --asar --overwrite --platform=linux --arch=x64 --icon=assets/app-icon/png/64.png --prune=true --out=build",
+    "pack-win32-ia32": "electron-packager . --asar  --overwrite --platform=win32 --arch=ia32 --icon=assets/app-icon/win/app.ico --prune=true --out=build --version-string.ProductName='vmd'",
+    "pack-win32-x64": "electron-packager . --asar  --overwrite --platform=win32 --arch=x64 --icon=assets/app-icon/win/app.ico --prune=true --out=build --version-string.ProductName='vmd'",
+    "pack-mac": "electron-packager . --asar --overwrite --platform=darwin --arch=x64 --icon=assets/app-icon/mac/app.icns --prune=true --out=build",
+    "package": "npm run pack-linux-ia32 && npm run pack-linux-x64 && npm run pack-win32-ia32 && npm run pack-win32-x64 && npm run pack-mac",
+    "release": "node ./script/release.js"
   },
   "bin": {
     "vmd": "./bin/cli.js"
@@ -35,6 +44,9 @@
     "rucola": "1.1.3"
   },
   "devDependencies": {
+    "electron-packager": "^7.0.3",
+    "promise-retryer": "0.0.1",
+    "request": "^2.72.0",
     "standard": "7.1.2"
   }
 }
