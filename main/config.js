@@ -2,11 +2,9 @@ const path = require('path')
 const fs = require('fs')
 const minimist = require('minimist')
 
-const isNotPackaged = /electron$/.test(process.argv[0])
-
-const argv = isNotPackaged
-  ? minimist([].concat(process.argv).splice(2))
-  : minimist([].concat(process.argv).splice(1))
+const isPackaged = !(/electron$/.test(process.argv[0]))
+const argvSpliceStart = isPackaged ? 1 : 2
+const argv = minimist([].concat(process.argv).splice(argvSpliceStart))
 
 const defaults = fs.readFileSync(path.join(__dirname, '../defaults.yml'), 'utf-8')
 
