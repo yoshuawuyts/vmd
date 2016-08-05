@@ -20,7 +20,9 @@
   },
   "repository": "yoshuawuyts/vmd",
   "keywords": [
+    "md",
     "markdown",
+    "viewer",
     "browser",
     "standalone",
     "preview",
