@@ -143,7 +143,7 @@ module.exports = function createWindow (options) {
       function (req, callback) {
         var mainStyle = options.mainStylesheet
           ? styles.getStylesheet(options.mainStylesheet)
-          : styles.getStylesheet(path.resolve(__dirname, '../node_modules/github-markdown-css/github-markdown.css'))
+          : styles.getStylesheet(require.resolve('github-markdown-css'))
 
         var extraStyle = options.extraStylesheet
           ? styles.getStylesheet(options.extraStylesheet)
