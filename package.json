@@ -39,6 +39,7 @@
     "highlight.js": "9.5.0",
     "lodash.template": "4.3.0",
     "marked": "0.3.6",
+    "minimist": "1.2.0",
     "object-assign": "4.1.0",
     "postcss": "5.1.1",
     "postcss-safe-important": "1.0.4",
