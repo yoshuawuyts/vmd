@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 const spawn = require('child_process').spawn
-const electron = require('electron-prebuilt')
+const electron = require('electron')
 const path = require('path')
 const serverPath = path.join(__dirname, '../main/main.js')
 
