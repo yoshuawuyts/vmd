@@ -4,8 +4,8 @@
   "description": "vmd",
   "main": "main/main.js",
   "scripts": {
-    "start": "electron .",
-    "dev": "electron . --debug",
+    "start": "electron main/main.js --not-packaged=true",
+    "dev": "electron main/main.js --not-packaged=true --debug=true",
     "test": "standard",
     "pack-linux-ia32": "electron-packager . --asar --overwrite --platform=linux --arch=ia32 --icon=assets/app-icon/png/64.png --prune=true --out=build",
     "pack-linux-x64": "electron-packager . --asar --overwrite --platform=linux --arch=x64 --icon=assets/app-icon/png/64.png --prune=true --out=build",
