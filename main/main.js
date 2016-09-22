@@ -94,6 +94,7 @@ function createWindowOptions (fromFile, fileOrContent) {
   var windowOptions = {
     devTools: conf.devtools,
     title: conf.title,
+    window: conf.window,
     mainStylesheet: conf.get('styles.main'),
     extraStylesheet: conf.get('styles.extra'),
     highlightTheme: conf.get('highlight.theme'),
