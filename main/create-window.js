@@ -10,6 +10,7 @@ const windowStateKeeper = require('electron-window-state')
 
 module.exports = function createWindow (options) {
   const mainWindowState = windowStateKeeper({
+    file: 'vmd-window-state.json',
     defaultWidth: 800,
     defaultHeight: 600
   })
