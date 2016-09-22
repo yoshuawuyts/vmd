@@ -131,6 +131,9 @@ $ gh-rtfm substack/node-browserify | vmd
  - `--highlight-stylesheet=FILE`: Provide a custom CSS file for syntax
    highlighting in code blocks.
 
+ - `--window-preservestate=false`: By default vmd preserves the window state
+   for the next session, set this option to false to disable this.
+
 ## Configuration
 
 All [Options](#options) that contain a value can be persisted in configuration

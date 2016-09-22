@@ -6,14 +6,28 @@ const chokidar = require('chokidar')
 const assign = require('object-assign')
 const sharedState = require('../shared/shared-state')
 const styles = require('./styles')
+const windowStateKeeper = require('electron-window-state')
 
 const defaultOptions = {
   width: 800,
-  height: 600
+  height: 600,
+  x: undefined,
+  y: undefined
 }
 
 module.exports = function createWindow (options) {
-  options = assign({}, defaultOptions, options)
+  const preservestate = options.window.preservestate && options.window.preservestate !== 'false'
+
+  if (preservestate) {
+    var mainWindowState = windowStateKeeper({
+      file: 'vmd-window-state.json',
+      defaultWidth: defaultOptions.width,
+      defaultHeight: defaultOptions.height
+    })
+    options = assign({}, mainWindowState, options)
+  } else {
+    options = assign({}, defaultOptions, options)
+  }
 
   const fromFile = typeof options.filePath !== 'undefined'
   var watcher
@@ -26,7 +40,9 @@ module.exports = function createWindow (options) {
     },
     icon: path.join(__dirname, 'assets/app-icon/png/512.png'),
     width: options.width,
-    height: options.height
+    height: options.height,
+    x: options.x,
+    y: options.y
   })
 
   updateTitle()
@@ -46,6 +62,10 @@ module.exports = function createWindow (options) {
 
   if (win.isFocused()) {
     sharedState.setFocusedWindow(win.id)
+  }
+
+  if (preservestate) {
+    mainWindowState.manage(win)
   }
 
   if (options.devTools) {
