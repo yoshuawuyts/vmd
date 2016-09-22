@@ -34,6 +34,10 @@ Options:
       --highlight-stylesheet=FILE  Provide a custom CSS file for syntax
                                    highlighting.
 
+      --window-preservestate=false By default vmd preserves the window state
+                                   for the next session, set this option to
+                                   false to disable this.
+
 
 Examples:
 
