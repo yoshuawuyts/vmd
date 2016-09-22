@@ -6,14 +6,15 @@ const chokidar = require('chokidar')
 const assign = require('object-assign')
 const sharedState = require('../shared/shared-state')
 const styles = require('./styles')
-
-const defaultOptions = {
-  width: 800,
-  height: 600
-}
+const windowStateKeeper = require('electron-window-state')
 
 module.exports = function createWindow (options) {
-  options = assign({}, defaultOptions, options)
+  const mainWindowState = windowStateKeeper({
+    defaultWidth: 800,
+    defaultHeight: 600
+  })
+
+  options = assign({}, mainWindowState, options)
 
   const fromFile = typeof options.filePath !== 'undefined'
   var watcher
@@ -26,8 +27,12 @@ module.exports = function createWindow (options) {
     },
     icon: path.join(__dirname, 'assets/app-icon/png/512.png'),
     width: options.width,
-    height: options.height
+    height: options.height,
+    x: options.x,
+    y: options.y
   })
+
+  mainWindowState.manage(win)
 
   updateTitle()
 
