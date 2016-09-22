@@ -1,4 +1,4 @@
-/*global vmd:true*/
+/* global vmd:true */
 
 const remote = require('electron').remote
 const url = remote.require('url')

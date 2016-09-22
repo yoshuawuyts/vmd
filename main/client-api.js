@@ -1,4 +1,4 @@
-/*global vmd:true*/
+/* global vmd:true */
 
 const assign = require('object-assign')
 
