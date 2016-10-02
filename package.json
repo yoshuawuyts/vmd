@@ -37,15 +37,20 @@
     "emojify.js": "1.1.0",
     "get-stdin": "5.0.1",
     "github-markdown-css": "2.4.1",
-    "highlight.js": "9.7.0",
     "lodash.template": "4.4.0",
-    "marked": "0.3.6",
+    "mdast-util-to-string": "^1.0.2",
     "minimist": "1.2.0",
     "object-assign": "4.1.0",
     "postcss": "5.2.0",
     "postcss-safe-important": "1.0.4",
     "redux": "3.6.0",
-    "rucola": "1.1.3"
+    "remark": "^6.0.1",
+    "remark-emoji-to-gemoji": "^1.0.0",
+    "remark-highlight.js": "^4.0.1",
+    "remark-html": "^5.0.1",
+    "remark-slug": "^4.2.2",
+    "rucola": "1.1.3",
+    "unist-util-visit": "^1.1.0"
   },
   "devDependencies": {
     "electron-packager": "8.0.0",
