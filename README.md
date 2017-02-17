@@ -82,6 +82,12 @@ When no path to a document is supplied, "README.md" will be opened by default:
 $ vmd
 ```
 
+When a path to a directory is supplied, "directory/README.md" will be opened by default:
+
+```sh
+$ vmd node_modules/electron # opens node_modules/electron/README.md
+```
+
 It reads from `stdin` so you can pipe markdown text in to it:
 
 ```sh
