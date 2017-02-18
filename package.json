@@ -56,6 +56,6 @@
     "electron-packager": "8.5.1",
     "promise-retryer": "0.0.1",
     "request": "2.79.0",
-    "standard": "8.1.0"
+    "standard": "8.6.0"
   }
 }
