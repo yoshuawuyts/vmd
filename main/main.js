@@ -53,6 +53,11 @@ if (fromFile) {
     var stat = fs.statSync(path.resolve(filePath))
 
     if (stat.isDirectory()) {
+      filePath = path.resolve(filePath, conf.document)
+      stat = fs.statSync(filePath)
+    }
+
+    if (stat.isDirectory()) {
       console.error('Cannot open', filePath + ': is a directory')
       app.exit(1)
     }
