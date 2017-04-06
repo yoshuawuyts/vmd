@@ -25,17 +25,22 @@ module.exports = function (template, model) {
   function updateMenuItems (model, tplArr, p) {
     tplArr.forEach(function (tplItem) {
       if (!tplItem._item) {
-        tplItem._item = new MenuItem({
+        var config = {
           type: tplItem.type,
           label: tplItem.label,
           accelerator: tplItem.accelerator,
           role: tplItem.role,
-          selector: tplItem.selector,
-          click: function (item, win) {
-            tplItem.click(m.getModel(), item, win)
-          },
           submenu: Array.isArray(tplItem.submenu) ? new Menu() : null
-        })
+          }
+        if (tplItem.click) {
+          config.click = function (item, win) {
+                tplItem.click(m.getModel(), item, win)
+          }
+        } else if (tplItem.selector) {
+          config.selector = tplItem.selector
+        }
+        
+        tplItem._item = new MenuItem(config)
 
         p.append(tplItem._item)
       }
