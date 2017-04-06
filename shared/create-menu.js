@@ -25,20 +25,17 @@ module.exports = function (template, model) {
   function updateMenuItems (model, tplArr, p) {
     tplArr.forEach(function (tplItem) {
       if (!tplItem._item) {
-        var config = {
-          type: tplItem.type,
-          label: tplItem.label,
-          accelerator: tplItem.accelerator,
-          role: tplItem.role,
-          submenu: Array.isArray(tplItem.submenu) ? new Menu() : null
-          }
+        
+        var config = Object.assign({}, tplItem); 
+        
+        if (Array.isArray(tplItem.submenu)) {
+            config.submenu = new Menu()
+        }
         if (tplItem.click) {
           config.click = function (item, win) {
                 tplItem.click(m.getModel(), item, win)
           }
-        } else if (tplItem.selector) {
-          config.selector = tplItem.selector
-        }
+        } 
         
         tplItem._item = new MenuItem(config)
 
