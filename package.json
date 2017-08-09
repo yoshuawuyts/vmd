@@ -1,7 +1,7 @@
 {
   "name": "vmd",
   "version": "1.29.1",
-  "description": "vmd",
+  "description": "preview markdown files",
   "main": "main/main.js",
   "scripts": {
     "start": "electron main/main.js --not-packaged=true",
