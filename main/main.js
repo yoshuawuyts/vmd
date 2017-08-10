@@ -123,6 +123,7 @@ function registerEmojiProtocol () {
     'emoji',
     function (req, callback) {
       var emoji = url.parse(req.url).hostname
+      // eslint-disable-next-line standard/no-callback-literal
       callback({
         path: path.join(emojiPath, emoji + '.png')
       })

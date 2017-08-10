@@ -23,7 +23,7 @@ checkToken()
 
 function checkToken () {
   if (!token) {
-    return Promise.reject('GITHUB_ACCESS_TOKEN environment variable not set\nSet it to a token with repo scope created from https://github.com/settings/tokens/new')
+    return Promise.reject(new Error('GITHUB_ACCESS_TOKEN environment variable not set\nSet it to a token with repo scope created from https://github.com/settings/tokens/new'))
   } else {
     return Promise.resolve(token)
   }

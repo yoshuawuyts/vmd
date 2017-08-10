@@ -178,6 +178,7 @@ module.exports = function createWindow (options) {
           extraStyle: extraStyle,
           highlightStyle: highlightStyle
         }
+        // eslint-disable-next-line standard/no-callback-literal
         callback({
           mimeType: 'text/html',
           data: indexHtml(data)
