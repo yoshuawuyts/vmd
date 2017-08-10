@@ -165,8 +165,8 @@ values in the configuration file. So `--zoom=1.5` will set the zoom factor to
 
 ## Authors
 
-- [Yoshua Wuyts](https://github.com/yoshuawuyts)
-- [Max Kueng](https://github.com/maxkueng)
+[Max Kueng](https://github.com/maxkueng), [Yoshua Wuyts](https://github.com/yoshuawuyts) 
+and [contributors](https://github.com/yoshuawuyts/vmd/graphs/contributors).
 
 ## License
 
