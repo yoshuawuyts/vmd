@@ -23,8 +23,8 @@ const renderer = remark()
     sanitize: false
   })
 
-function renderMarkdown (text) {
-  return renderer.process(text).toString()
+function renderMarkdown (text, callback) {
+  renderer.process(text, callback)
 }
 
 function gemojiExists (emoji) {

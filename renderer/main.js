@@ -280,7 +280,13 @@ vmd.onContent(function (ev, data) {
     base.setAttribute('href', data.baseUrl)
   }
 
-  mdBody.innerHTML = md
+  renderMarkdown(data.contents, function (err, file) {
+      if (err) {
+        console.log(err);
+      }
+      mdBody.innerHTML = String(file)
+    })
+
 })
 
 window.addEventListener('click', function (ev) {
