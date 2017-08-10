@@ -32,7 +32,7 @@
   "dependencies": {
     "chokidar": "1.7.0",
     "deep-equal": "1.0.1",
-    "electron": "1.6.11",
+    "electron": "1.7.5",
     "electron-window-state": "4.1.1",
     "emojify.js": "1.1.0",
     "get-stdin": "5.0.1",
