@@ -17,6 +17,7 @@ const defaultOptions = {
 
 module.exports = function createWindow (options) {
   const preservestate = options.window.preservestate && options.window.preservestate !== 'false'
+  const autoHideMenuBar = options.window.autohidemenubar && options.window.autohidemenubar !== 'false'
 
   if (preservestate) {
     var mainWindowState = windowStateKeeper({
@@ -42,7 +43,8 @@ module.exports = function createWindow (options) {
     width: options.width,
     height: options.height,
     x: options.x,
-    y: options.y
+    y: options.y,
+    autoHideMenuBar: autoHideMenuBar
   })
 
   updateTitle()

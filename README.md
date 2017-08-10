@@ -140,6 +140,10 @@ $ gh-rtfm substack/node-browserify | vmd
  - `--window-preservestate=false`: By default vmd preserves the window state
    for the next session, set this option to false to disable this.
 
+ - `--window-autohidemenubar=true`: By default vmd always shows the menu bar.
+   To hide it set this flag to `true`. The menu visibility can be toggled using
+   the `Alt` key. Linux and Windows only.
+
 ## Configuration
 
 All [Options](#options) that contain a value can be persisted in configuration

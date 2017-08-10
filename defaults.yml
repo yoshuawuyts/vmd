@@ -5,3 +5,4 @@ highlight:
   theme: github
 window:
   preservestate: true
+  autohidemenubar: false
