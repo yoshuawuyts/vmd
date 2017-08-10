@@ -1,3 +1,5 @@
+const path = require('path')
+const fs = require('fs')
 const assign = require('object-assign')
 const remark = require('remark')
 const slug = require('remark-slug')
@@ -6,6 +8,8 @@ const emojiToGemoji = require('remark-emoji-to-gemoji')
 const html = require('remark-html')
 const visit = require('unist-util-visit')
 const toString = require('mdast-util-to-string')
+
+const emojiPath = path.resolve(path.dirname(require.resolve('emojify.js')), '..', 'images', 'basic')
 
 module.exports = renderMarkdown
 
@@ -21,6 +25,15 @@ const renderer = remark()
 
 function renderMarkdown (text) {
   return renderer.process(text).toString()
+}
+
+function gemojiExists (emoji) {
+  try {
+    const stat = fs.statSync(path.join(emojiPath, emoji + '.png'))
+    return stat.isFile()
+  } catch (err) {
+    return false
+  }
 }
 
 function gemojiToImages (remark) {
@@ -66,6 +79,10 @@ function gemojiToImages (remark) {
       while ((m = reg.exec(node.value)) !== null) {
         const gemojiLength = m[0].length
         const gemojiName = m[1]
+
+        if (!gemojiExists(gemojiName)) {
+          return
+        }
 
         if (m.index !== lastIndex) {
           const textNode = extractTextNode(node.value, lastIndex, m.index)
