@@ -41,7 +41,7 @@
     "mdast-util-to-string": "^1.0.4",
     "minimist": "^1.2.0",
     "object-assign": "^4.1.1",
-    "postcss": "^5.2.14",
+    "postcss": "6.0.8",
     "postcss-safe-important": "^1.0.4",
     "redux": "^3.7.2",
     "remark": "^6.2.0",
