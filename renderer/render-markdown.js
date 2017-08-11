@@ -1,6 +1,5 @@
 const path = require('path');
 const fs = require('fs');
-const assign = require('object-assign');
 const remark = require('remark');
 const slug = require('remark-slug');
 const hljs = require('remark-highlight.js');
@@ -130,7 +129,7 @@ function fixHeadings() {
         node.children = [].concat(node.children)
           .map((child, index) => {
             if (child.type === 'text' && index === 0) {
-              return assign({}, child, {
+              return Object.assign({}, child, {
                 value: nodeTextParts[2],
               });
             }

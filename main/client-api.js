@@ -1,6 +1,5 @@
 /* global vmd:true */
 
-const assign = require('object-assign');
 const {
   ipcRenderer,
   remote,
@@ -14,7 +13,7 @@ const electron = {
 };
 
 // no var/let/const on purpose
-vmd = assign({
+vmd = Object.assign({
   openFile(filePath) {
     electron.ipc.send('open-file', filePath);
   },

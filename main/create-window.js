@@ -7,7 +7,6 @@ const {
 } = require('electron');
 const template = require('lodash.template');
 const chokidar = require('chokidar');
-const assign = require('object-assign');
 const sharedState = require('../shared/shared-state');
 const styles = require('./styles');
 const windowStateKeeper = require('electron-window-state');
@@ -31,9 +30,9 @@ module.exports = function createWindow(options) {
       defaultWidth: defaultOptions.width,
       defaultHeight: defaultOptions.height,
     });
-    windowOptions = assign({}, defaultOptions, mainWindowState, options);
+    windowOptions = Object.assign({}, defaultOptions, mainWindowState, options);
   } else {
-    windowOptions = assign({}, defaultOptions, options);
+    windowOptions = Object.assign({}, defaultOptions, options);
   }
 
   const fromFile = typeof windowOptions.filePath !== 'undefined';
@@ -68,7 +67,7 @@ module.exports = function createWindow(options) {
 
   function onOpenFile(ev, filePath) {
     if (ev.sender === win.webContents) {
-      createWindow(assign({}, windowOptions, {
+      createWindow(Object.assign({}, windowOptions, {
         filePath,
       }));
     }

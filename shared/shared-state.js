@@ -1,4 +1,3 @@
-const assign = require('object-assign');
 const createStore = require('redux').createStore;
 const combineReducers = require('redux').combineReducers;
 const { BrowserWindow } = require('electron');
@@ -41,12 +40,12 @@ function win(state, action) {
 
   switch (action.type) {
     case 'SET_FILE_PATH':
-      return assign({}, state, {
+      return Object.assign({}, state, {
         filePath: action.filePath,
       });
 
     case 'SET_HISTORY_STATUS':
-      return assign({}, state, {
+      return Object.assign({}, state, {
         history: {
           canGoBack: action.canGoBack,
           canGoForward: action.canGoForward,
@@ -54,12 +53,12 @@ function win(state, action) {
       });
 
     case 'SET_SELECTION':
-      return assign({}, state, {
+      return Object.assign({}, state, {
         selection: action.selection,
       });
 
     case 'CLEAR_SELECTION':
-      return assign({}, state, {
+      return Object.assign({}, state, {
         selection: null,
       });
 
@@ -152,7 +151,7 @@ const actions = {
   },
 };
 
-module.exports = assign({}, actions, {
+module.exports = Object.assign({}, actions, {
   subscribe: store.subscribe,
   getState: store.getState,
   getWindowState,
