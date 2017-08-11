@@ -12,19 +12,29 @@ const MenuItem = isRenderer ? remote.MenuItem : ElectronMenuItem;
 function updateMenuItems(m, model, tplArr = [], p) {
   tplArr.forEach((tplItem) => {
     if (!tplItem.menuItem) {
-      const config = Object.assign({}, tplItem);
+      const menuItemOptions = {
+        click: tplItem.click,
+        role: tplItem.role,
+        type: tplItem.type,
+        label: tplItem.label,
+        sublabel: tplItem.sublabel,
+        accelerator: tplItem.accelerator,
+        icon: tplItem.icon,
+        id: tplItem.id,
+        position: tplItem.position,
+      };
 
       if (Array.isArray(tplItem.submenu)) {
-        config.submenu = new Menu();
+        menuItemOptions.submenu = new Menu();
       }
       if (tplItem.click) {
-        config.click = (item, win) => {
+        menuItemOptions.click = (item, win) => {
           tplItem.click(m.getModel(), item, win);
         };
       }
 
       // eslint-disable-next-line no-param-reassign
-      tplItem.menuItem = new MenuItem(config);
+      tplItem.menuItem = new MenuItem(menuItemOptions);
 
       p.append(tplItem.menuItem);
     }
