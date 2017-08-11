@@ -1,165 +1,160 @@
-const assign = require('object-assign')
-const createStore = require('redux').createStore
-const combineReducers = require('redux').combineReducers
-const BrowserWindow = require('electron').BrowserWindow
+const assign = require('object-assign');
+const createStore = require('redux').createStore;
+const combineReducers = require('redux').combineReducers;
+const { BrowserWindow } = require('electron');
 
-const sharedState = combineReducers({
-  focusedWindow: focusedWindow,
-  windows: windows
-})
-
-var store = createStore(sharedState)
-
-function focusedWindowAction (action) {
-  var fw = BrowserWindow.getFocusedWindow()
+function focusedWindowAction(action) {
+  const fw = BrowserWindow.getFocusedWindow();
 
   if (typeof action.windowId === 'undefined' && fw) {
-    action.windowId = fw.id
+    // eslint-disable-next-line no-param-reassign
+    action.windowId = fw.id;
   }
 
-  return action
+  return action;
 }
 
-const actions = {
-
-  setFocusedWindow: function (windowId) {
-    store.dispatch(focusedWindowAction({
-      type: 'SET_FOCUSED_WINDOW',
-      windowId: windowId
-    }))
-  },
-
-  setFilePath: function (windowId, filePath) {
-    store.dispatch(focusedWindowAction({
-      type: 'SET_FILE_PATH',
-      windowId: windowId,
-      filePath: filePath
-    }))
-  },
-
-  setSelection: function (windowId, selection) {
-    store.dispatch(focusedWindowAction({
-      type: 'SET_SELECTION',
-      windowId: windowId,
-      selection: selection
-    }))
-  },
-
-  clearSelection: function (windowId) {
-    store.dispatch(focusedWindowAction({
-      type: 'CLEAR_SELECTION',
-      windowId: windowId
-    }))
-  },
-
-  setHistoryStatus: function (windowId, data) {
-    store.dispatch(focusedWindowAction({
-      type: 'SET_HISTORY_STATUS',
-      windowId: windowId,
-      canGoBack: data.canGoBack,
-      canGoForward: data.canGoForward
-    }))
-  }
-}
-
-function focusedWindow (state, action) {
+function focusedWindow(state, action) {
   if (typeof state === 'undefined') {
-    return null
+    return null;
   }
 
   switch (action.type) {
     case 'SET_FOCUSED_WINDOW':
-      return action.windowId
+      return action.windowId;
 
     default:
-      return state
+      return state;
   }
 }
 
-function win (state, action) {
+function win(state, action) {
   if (typeof state === 'undefined') {
     return {
-      id: action.windowId
-    }
+      id: action.windowId,
+    };
   }
 
   if (state.id !== action.windowId) {
-    return state
+    return state;
   }
 
   switch (action.type) {
     case 'SET_FILE_PATH':
       return assign({}, state, {
-        filePath: action.filePath
-      })
+        filePath: action.filePath,
+      });
 
     case 'SET_HISTORY_STATUS':
       return assign({}, state, {
         history: {
           canGoBack: action.canGoBack,
-          canGoForward: action.canGoForward
-        }
-      })
+          canGoForward: action.canGoForward,
+        },
+      });
 
     case 'SET_SELECTION':
       return assign({}, state, {
-        selection: action.selection
-      })
+        selection: action.selection,
+      });
 
     case 'CLEAR_SELECTION':
       return assign({}, state, {
-        selection: null
-      })
+        selection: null,
+      });
 
     default:
-      return state
+      return state;
   }
 }
 
-function windows (state, action) {
+function windows(state, action) {
   if (typeof state === 'undefined') {
-    return []
+    return [];
   }
 
   switch (action.type) {
     case 'SET_FILE_PATH':
     case 'SET_SELECTION':
     case 'CLEAR_SELECTION':
-    case 'SET_HISTORY_STATUS':
-      var newState = state.slice(0)
-
-      var index = state.findIndex(function (w) {
-        return w.id === action.windowId
-      })
+    case 'SET_HISTORY_STATUS': {
+      let newState = state.slice(0);
+      const index = state.findIndex(w => w.id === action.windowId);
 
       if (index === -1) {
-        newState = newState.concat(win(undefined, action))
+        newState = newState.concat(win(undefined, action));
       }
 
-      return newState.map(function (w) {
-        return win(w, action)
-      })
-
+      return newState.map(w => win(w, action));
+    }
     default:
-      return state
+      return state;
   }
 }
 
-function getFocusedWindowState () {
-  var fw = BrowserWindow.getFocusedWindow()
-  return fw && getWindowState(fw.id)
+
+const sharedState = combineReducers({
+  focusedWindow,
+  windows,
+});
+
+const store = createStore(sharedState);
+
+function getWindowState(windowId) {
+  return store.getState().windows
+    .find(w => w.id === windowId);
 }
 
-function getWindowState (windowId) {
-  return store.getState().windows
-    .find(function (w) {
-      return w.id === windowId
-    })
+function getFocusedWindowState() {
+  const fw = BrowserWindow.getFocusedWindow();
+  return fw && getWindowState(fw.id);
 }
+
+const actions = {
+
+  setFocusedWindow(windowId) {
+    store.dispatch(focusedWindowAction({
+      type: 'SET_FOCUSED_WINDOW',
+      windowId,
+    }));
+  },
+
+  setFilePath(windowId, filePath) {
+    store.dispatch(focusedWindowAction({
+      type: 'SET_FILE_PATH',
+      windowId,
+      filePath,
+    }));
+  },
+
+  setSelection(windowId, selection) {
+    store.dispatch(focusedWindowAction({
+      type: 'SET_SELECTION',
+      windowId,
+      selection,
+    }));
+  },
+
+  clearSelection(windowId) {
+    store.dispatch(focusedWindowAction({
+      type: 'CLEAR_SELECTION',
+      windowId,
+    }));
+  },
+
+  setHistoryStatus(windowId, data) {
+    store.dispatch(focusedWindowAction({
+      type: 'SET_HISTORY_STATUS',
+      windowId,
+      canGoBack: data.canGoBack,
+      canGoForward: data.canGoForward,
+    }));
+  },
+};
 
 module.exports = assign({}, actions, {
   subscribe: store.subscribe,
   getState: store.getState,
-  getWindowState: getWindowState,
-  getFocusedWindowState: getFocusedWindowState
-})
+  getWindowState,
+  getFocusedWindowState,
+});

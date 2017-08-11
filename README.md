@@ -2,7 +2,6 @@
 [![NPM version][npm-image]][npm-url]
 [![build status][travis-image]][travis-url]
 [![Downloads][downloads-image]][downloads-url]
-[![js-standard-style][standard-image]][standard-url]
 
 Preview markdown files in a separate window. Markdown is formatted exactly the
 same as on GitHub.
@@ -182,6 +181,4 @@ and [contributors](https://github.com/yoshuawuyts/vmd/graphs/contributors).
 [travis-url]: https://travis-ci.org/yoshuawuyts/vmd
 [downloads-image]: http://img.shields.io/npm/dm/vmd.svg?style=flat-square
 [downloads-url]: https://npmjs.org/package/vmd
-[standard-image]: https://img.shields.io/badge/code%20style-standard-brightgreen.svg?style=flat-square
-[standard-url]: https://github.com/feross/standard
 [emoji-cheat-sheet]: http://www.emoji-cheat-sheet.com/

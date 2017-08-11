@@ -1,33 +1,33 @@
-var zoom = {
-  init: function (zoom) {
-    if (zoom) {
-      this.currentZoom = +zoom
-      this.update()
-      return this
+const zoom = {
+  init(initialZoom) {
+    if (initialZoom) {
+      this.currentZoom = +initialZoom;
+      this.update();
+      return this;
     }
 
-    this.currentZoom = +window.getComputedStyle(document.body).getPropertyValue('zoom')
-    return this
+    this.currentZoom = +window.getComputedStyle(document.body).getPropertyValue('zoom');
+    return this;
   },
 
-  update: function () {
-    document.body.style.zoom = this.currentZoom
+  update() {
+    document.body.style.zoom = this.currentZoom;
   },
 
-  zoomIn: function () {
-    this.currentZoom += 0.1
-    this.update()
+  zoomIn() {
+    this.currentZoom += 0.1;
+    this.update();
   },
 
-  zoomOut: function () {
-    this.currentZoom -= 0.1
-    this.update()
+  zoomOut() {
+    this.currentZoom -= 0.1;
+    this.update();
   },
 
-  reset: function () {
-    this.currentZoom = 1
-    this.update()
-  }
-}
+  reset() {
+    this.currentZoom = 1;
+    this.update();
+  },
+};
 
-module.exports = zoom.init.bind(zoom)
+module.exports = zoom.init.bind(zoom);

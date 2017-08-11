@@ -1,44 +1,44 @@
-const path = require('path')
-const fs = require('fs')
-const app = require('electron').app
-const postcss = require('postcss')
-const postcssImportant = require('postcss-safe-important')
+const path = require('path');
+const fs = require('fs');
+const { app } = require('electron');
+const postcss = require('postcss');
+const postcssImportant = require('postcss-safe-important');
 
-exports.getHighlightThemes = function () {
-  var themesPath = path.resolve(require.resolve('highlight.js'), '../..', 'styles')
+exports.getHighlightThemes = function styles() {
+  const themesPath = path.resolve(require.resolve('highlight.js'), '../..', 'styles');
 
   try {
     return fs.readdirSync(themesPath)
-      .filter(function (name) {
-        return path.extname(name) === '.css' && name !== 'default.css'
-      })
-      .map(function (name) {
-        return path.basename(name, '.css')
-      })
-  } catch (ex) {
-    return []
+      .filter(name => path.extname(name) === '.css' && name !== 'default.css')
+      .map(name => path.basename(name, '.css'));
+  } catch (err) {
+    return [];
   }
-}
+};
 
-exports.getHighlightTheme = function (theme) {
-  var themePath = path.resolve(require.resolve('highlight.js'), '../..', 'styles', theme + '.css')
+exports.getHighlightTheme = function getHighlightTheme(theme) {
+  const themePath = path.resolve(require.resolve('highlight.js'), '../..', 'styles', `${theme}.css`);
 
   try {
-    var themeStyles = fs.readFileSync(themePath, 'utf-8')
-    return postcss(postcssImportant).process(themeStyles).css
-  } catch (ex) {
-    console.error('Cannot load theme', theme + ':', ex.code === 'ENOENT' ? 'no such file' : ex.message)
-    app.exit(1)
+    const themeStyles = fs.readFileSync(themePath, 'utf-8');
+    return postcss(postcssImportant).process(themeStyles).css;
+  } catch (err) {
+    console.error('Cannot load theme', `${theme}:`, err.code === 'ENOENT' ? 'no such file' : err.message);
+    app.exit(1);
   }
-}
 
-exports.getStylesheet = function (filePath) {
-  var stylePath = path.resolve(filePath)
+  return '';
+};
+
+exports.getStylesheet = function getStylesheet(filePath) {
+  const stylePath = path.resolve(filePath);
 
   try {
-    return fs.readFileSync(stylePath, 'utf-8')
-  } catch (ex) {
-    console.error('Cannot load style', filePath + ':', ex.code === 'ENOENT' ? 'no such file' : ex.message)
-    app.exit(1)
+    return fs.readFileSync(stylePath, 'utf-8');
+  } catch (err) {
+    console.error('Cannot load style', `${filePath}:`, err.code === 'ENOENT' ? 'no such file' : err.message);
+    app.exit(1);
   }
-}
+
+  return '';
+};

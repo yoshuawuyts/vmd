@@ -1,54 +1,64 @@
 /* global vmd:true */
 
-const assign = require('object-assign')
+const assign = require('object-assign');
+const {
+  ipcRenderer,
+  remote,
+} = require('electron');
+
+const sharedState = remote.require('../shared/shared-state');
 
 const electron = {
-  ipc: require('electron').ipcRenderer,
-  sharedState: require('electron').remote.require('../shared/shared-state')
-}
+  ipc: ipcRenderer,
+  sharedState,
+};
 
 // no var/let/const on purpose
 vmd = assign({
-  openFile: function (filePath) {
-    electron.ipc.send('open-file', filePath)
+  openFile(filePath) {
+    electron.ipc.send('open-file', filePath);
   },
 
-  on: function (eventName, listener) {
-    if (!electron.ipc) { return }
-    electron.ipc.on(eventName, listener)
+  on(eventName, listener) {
+    if (!electron.ipc) { return; }
+    electron.ipc.on(eventName, listener);
   },
 
-  off: function (eventName, listener) {
-    if (!electron.ipc) { return }
-    if (typeof listener !== 'function') { return }
-    return electron.ipc.removeListener(eventName, listener)
+  off(eventName, listener) {
+    if (!electron.ipc) {
+      return;
+    }
+    if (typeof listener !== 'function') {
+      return;
+    }
+    electron.ipc.removeListener(eventName, listener);
   },
 
-  onPrintAction: function (callback) {
-    vmd.on('print', callback)
+  onPrintAction(callback) {
+    vmd.on('print', callback);
   },
 
-  onHistoryBackAction: function (callback) {
-    vmd.on('history-back', callback)
+  onHistoryBackAction(callback) {
+    vmd.on('history-back', callback);
   },
 
-  onHistoryForwardAction: function (callback) {
-    vmd.on('history-forward', callback)
+  onHistoryForwardAction(callback) {
+    vmd.on('history-forward', callback);
   },
 
-  onZoomInAction: function (callback) {
-    vmd.on('zoom-in', callback)
+  onZoomInAction(callback) {
+    vmd.on('zoom-in', callback);
   },
 
-  onZoomOutAction: function (callback) {
-    vmd.on('zoom-out', callback)
+  onZoomOutAction(callback) {
+    vmd.on('zoom-out', callback);
   },
 
-  onZoomResetAction: function (callback) {
-    vmd.on('zoom-reset', callback)
+  onZoomResetAction(callback) {
+    vmd.on('zoom-reset', callback);
   },
 
-  onContent: function (callback) {
-    vmd.on('md', callback)
-  }
-}, electron.sharedState)
+  onContent(callback) {
+    vmd.on('md', callback);
+  },
+}, electron.sharedState);

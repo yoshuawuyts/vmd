@@ -1,63 +1,72 @@
-const isRenderer = process.type === 'renderer'
-const electron = require('electron')
-const Menu = isRenderer ? electron.remote.Menu : electron.Menu
-const MenuItem = isRenderer ? electron.remote.MenuItem : electron.MenuItem
+const {
+  remote,
+  Menu: ElectronMenu,
+  MenuItem: ElectronMenuItem,
+} = require('electron');
 
-module.exports = function (template, model) {
-  var _menu = new Menu()
-  var _model = model
+const isRenderer = process.type === 'renderer';
 
-  var m = {
-    getMenu: function () {
-      return _menu
-    },
+const Menu = isRenderer ? remote.Menu : ElectronMenu;
+const MenuItem = isRenderer ? remote.MenuItem : ElectronMenuItem;
 
-    getModel: function () {
-      return _model
-    },
+function updateMenuItems(m, model, tplArr = [], p) {
+  tplArr.forEach((tplItem) => {
+    if (!tplItem.menuItem) {
+      const config = Object.assign({}, tplItem);
 
-    update: function (model) {
-      _model = model
-      updateMenuItems(m.getModel(), template, m.getMenu())
+      if (Array.isArray(tplItem.submenu)) {
+        config.submenu = new Menu();
+      }
+      if (tplItem.click) {
+        config.click = (item, win) => {
+          tplItem.click(m.getModel(), item, win);
+        };
+      }
+
+      // eslint-disable-next-line no-param-reassign
+      tplItem.menuItem = new MenuItem(config);
+
+      p.append(tplItem.menuItem);
     }
-  }
 
-  function updateMenuItems (model, tplArr, p) {
-    tplArr.forEach(function (tplItem) {
-      if (!tplItem._item) {
-        var config = Object.assign({}, tplItem)
+    if (typeof tplItem.visible === 'function') {
+      // eslint-disable-next-line no-param-reassign
+      tplItem.menuItem.visible = tplItem.visible(model, tplItem.menuItem);
+    }
 
-        if (Array.isArray(tplItem.submenu)) {
-          config.submenu = new Menu()
-        }
-        if (tplItem.click) {
-          config.click = function (item, win) {
-            tplItem.click(m.getModel(), item, win)
-          }
-        }
+    if (typeof tplItem.enabled === 'function') {
+      // eslint-disable-next-line no-param-reassign
+      tplItem.menuItem.enabled = tplItem.enabled(model, tplItem.menuItem);
+    }
 
-        tplItem._item = new MenuItem(config)
+    if (tplItem.menuItem.submenu) {
+      updateMenuItems(m, model, tplItem.submenu, tplItem.menuItem.submenu);
+    }
+  });
 
-        p.append(tplItem._item)
-      }
-
-      if (typeof tplItem.visible === 'function') {
-        tplItem._item.visible = tplItem.visible(model, tplItem._item)
-      }
-
-      if (typeof tplItem.enabled === 'function') {
-        tplItem._item.enabled = tplItem.enabled(model, tplItem._item)
-      }
-
-      if (tplItem._item.submenu) {
-        updateMenuItems(model, tplItem.submenu, tplItem._item.submenu)
-      }
-    })
-
-    return p
-  }
-
-  updateMenuItems(m.getModel(), template, m.getMenu())
-
-  return m
+  return p;
 }
+
+module.exports = function createMenu(template, initialModel) {
+  const menu = new Menu();
+  let localModel = initialModel;
+
+  const m = {
+    getMenu() {
+      return menu;
+    },
+
+    getModel() {
+      return localModel;
+    },
+
+    update(newModel) {
+      localModel = newModel;
+      updateMenuItems(this, m.getModel(), template, m.getMenu());
+    },
+  };
+
+  updateMenuItems(m, m.getModel(), template, m.getMenu());
+
+  return m;
+};
