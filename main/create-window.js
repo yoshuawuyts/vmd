@@ -96,6 +96,7 @@ module.exports = function createWindow(options) {
 
       win.webContents.send('md', {
         filePath: windowOptions.filePath,
+        isHTML: windowOptions.filePath && /\.html?$/.test(windowOptions.filePath),
         baseUrl,
         contents,
       });

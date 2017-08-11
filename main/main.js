@@ -18,7 +18,7 @@ const createMenu = require('../shared/create-menu');
 global.conf = conf;
 
 const markdownExtensions = ['markdown', 'mdown', 'mkdn', 'md', 'mkd', 'mdwn', 'mdtxt', 'mdtext'];
-const defaultFilePath = path.join(__dirname, '..', 'renderer', 'default.md');
+const defaultFilePath = path.join(__dirname, '..', 'renderer', 'default.html');
 
 if (conf.help) {
   console.log(fs.readFileSync(path.join(__dirname, '..', 'usage.txt'), 'utf-8'));

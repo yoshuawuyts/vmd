@@ -1,0 +1,79 @@
+<style>
+  body, html {
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    background-color: #fff;
+    font-family: sans-serif;
+    margin: 0 auto;
+    position: relative;
+    color: rgba(33, 33, 33, 1);
+  }
+
+  body {
+    transition: background-color 0.2s ease-out, color 0.2s ease-out;
+  }
+
+  body[data-isdragging=true] {
+    color: rgba(33, 33, 33, 0.4);
+    background-color: rgba(38, 20, 19, 0.05);
+  }
+
+  a {
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .welcome-page {
+    position: absolute;
+    width: 80%;
+    left: 10%;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  .logo {
+    margin-bottom: 6vw;
+    opacity: 1;
+    transition: opacity 0.2s ease-out;
+  }
+
+  body[data-isdragging=true] .logo {
+    opacity: 0.4;
+  }
+
+  .logo img {
+    display: block;
+    width: 30vw;
+    margin: 0 auto;
+  }
+
+  .instructions {
+    text-align: center;
+    font-weight: bold;
+    font-size: 7vw;
+  }
+
+  .instructions p {
+    margin: 0;
+  }
+
+  .instructions p + p {
+    margin-top: 3.5vw;
+  }
+
+  .instructions .dnd {
+    color: rgba(33, 33, 33, 1);
+  }
+</style>
+
+<div class="welcome-page">
+  <div class="logo">
+    <img src="../assets/vmd.svg" />
+  </div>
+
+  <div class="instructions">
+    <p>Welcome to <a href="https://github.com/yoshuawuyts/vmd">vmd</a>.</p>
+    <p>Open a Markdown file through the menu or <span class="dnd">drag and drop</span> a file to open it.</p>
+  </div>
+</div>

@@ -274,8 +274,8 @@ vmd.onHistoryForwardAction(() => {
 
 vmd.onContent((ev, data) => {
   const body = document.body;
+  const pageContent = document.querySelector('.page-content');
   const base = document.querySelector('base');
-  const mdBody = document.querySelector('.markdown-body');
 
   if (data.filePath) {
     body.setAttribute('data-filepath', data.filePath);
@@ -291,12 +291,23 @@ vmd.onContent((ev, data) => {
     base.setAttribute('href', data.baseUrl);
   }
 
-  renderMarkdown(data.contents, (err, file) => {
-    if (err) {
-      console.error(err);
+  if (data.isHTML) {
+    pageContent.innerHTML = data.contents;
+  } else {
+    let mdBody = document.querySelector('.markdown-body');
+
+    if (!mdBody) {
+      pageContent.innerHTML = '<div class="markdown-body"></div>';
+      mdBody = document.querySelector('.markdown-body');
     }
-    mdBody.innerHTML = String(file);
-  });
+
+    renderMarkdown(data.contents, (err, file) => {
+      if (err) {
+        console.error(err);
+      }
+      mdBody.innerHTML = String(file);
+    });
+  }
 });
 
 window.addEventListener('click', (ev) => {
@@ -339,6 +350,23 @@ document.addEventListener('drop', (ev) => {
 document.addEventListener('dragover', (ev) => {
   ev.preventDefault();
   ev.stopPropagation();
+});
+
+document.addEventListener('dragenter', (ev) => {
+  ev.preventDefault();
+  ev.stopPropagation();
+  if (ev.toElement !== document.body) {
+    return;
+  }
+  document.body.setAttribute('data-isDragging', true);
+});
+
+document.addEventListener('dragleave', (ev) => {
+  ev.preventDefault();
+  ev.stopPropagation();
+  if (ev.x === 0 && ev.y === 0) {
+    document.body.setAttribute('data-isDragging', false);
+  }
 });
 
 setInterval(() => {
