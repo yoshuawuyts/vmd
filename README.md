@@ -2,6 +2,7 @@
 [![NPM version][npm-image]][npm-url]
 [![build status][travis-image]][travis-url]
 [![Downloads][downloads-image]][downloads-url]
+[![Codacy Badge][codacy-image]][codacy-url]
 
 Preview markdown files in a separate window. Markdown is formatted exactly the
 same as on GitHub.
@@ -182,3 +183,5 @@ and [contributors](https://github.com/yoshuawuyts/vmd/graphs/contributors).
 [downloads-image]: http://img.shields.io/npm/dm/vmd.svg?style=flat-square
 [downloads-url]: https://npmjs.org/package/vmd
 [emoji-cheat-sheet]: http://www.emoji-cheat-sheet.com/
+[codacy-image]: https://img.shields.io/codacy/grade/ccaa489b6f664ebd9a12d900334be10f/master.svg?style=flat-square
+[codacy-url]: https://www.codacy.com/app/maxkueng/vmd?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=yoshuawuyts/vmd&amp;utm_campaign=Badge_Grade
