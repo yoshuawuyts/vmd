@@ -37,6 +37,10 @@ vmd = Object.assign({
     vmd.on('print', callback);
   },
 
+  onFindAction(callback) {
+    vmd.on('find', callback);
+  },
+
   onHistoryBackAction(callback) {
     vmd.on('history-back', callback);
   },

@@ -49,6 +49,10 @@ same as on GitHub.
     - [ ] List item 1
     - [x] List item 2
 
+ - **Search in page:** Search within your markdown file and scroll to the
+   results. Select "Edit -> Find" from the menu or hit `Ctrl+F` (or `Cmd+F` on
+   OS X).
+
  - **Customization:** Select different themes and provide your own styles to
    make vmd look the way you want. Take a look at the [Options](#options) for
    an overview of available customization options.
