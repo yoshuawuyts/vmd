@@ -216,6 +216,13 @@ function addApplicationMenu() {
       label: 'Edit',
       submenu: [
         {
+          label: 'Find',
+          accelerator: 'CmdOrCtrl+F',
+          click(model, item, win) {
+            win.webContents.send('find');
+          },
+        },
+        {
           label: 'Copy',
           accelerator: 'CmdOrCtrl+C',
           role: 'copy',

@@ -43,6 +43,28 @@
       color: blue;
       border: 2px solid green;
     }
+
+    .electron-in-page-search-window {
+      position: fixed;
+      top: 0;
+      right: 0;
+      border: solid grey 1px;
+      background-color: white;
+      width: 300px;
+      height: 36px;
+      opacity: 1;
+      transition: opacity 0.2s ease-out;
+    }
+
+    .electron-in-page-search-window.search-inactive {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .electron-in-page-search-window.search-active {
+      opacity: 1;
+      pointer-events: all;
+    }
   </style>
   <style><%= extraStyle %></style>
   <base>

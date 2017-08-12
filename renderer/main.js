@@ -8,12 +8,15 @@ const fs = remote.require('fs');
 const shell = remote.shell;
 const clipboard = remote.clipboard;
 const nativeImage = remote.nativeImage;
+const searchInPage = require('electron-in-page-search').default;
 const conf = remote.getGlobal('conf');
 const currentWindow = remote.getCurrentWindow();
 const renderMarkdown = require('./render-markdown');
 const createMenu = require('../shared/create-menu');
 const hist = require('./history')();
 const zoom = require('./zoom')(conf.zoom);
+
+const inPageSearch = searchInPage(remote.getCurrentWebContents());
 
 hist.subscribe(() => {
   vmd.setHistoryStatus(currentWindow.id, {
@@ -258,6 +261,10 @@ function updateSelection() {
 
 vmd.onPrintAction(() => {
   window.print();
+});
+
+vmd.onFindAction(() => {
+  inPageSearch.openSearchWindow();
 });
 
 vmd.onZoomInAction(zoom.zoomIn.bind(zoom));
