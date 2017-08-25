@@ -18,6 +18,10 @@ vmd = Object.assign({
     electron.ipc.send('open-file', filePath);
   },
 
+  openFileDialog() {
+    electron.ipc.send('open-file-dialog');
+  },
+
   on(eventName, listener) {
     if (!electron.ipc) { return; }
     electron.ipc.on(eventName, listener);

@@ -208,6 +208,11 @@ function getLinkType(el) {
 }
 
 function handleLink(ev) {
+  if (ev.target === document.querySelector('.welcome-page')) {
+    vmd.openFileDialog();
+    return;
+  }
+
   const link = getLinkType(findClosestLink(ev.target));
 
   if (!link) {

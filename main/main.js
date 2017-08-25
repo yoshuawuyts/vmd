@@ -86,6 +86,11 @@ function createWindowOptions(loadFromFile, fileOrContent) {
     extraStylesheet: conf.get('styles.extra'),
     highlightTheme: conf.get('highlight.theme'),
     highlightStylesheet: conf.get('highlight.stylesheet'),
+    handlers: {
+      openFileDialog: (win) => {
+        openFileDialog(win);
+      },
+    },
   };
 
   if (loadFromFile) {

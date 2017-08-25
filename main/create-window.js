@@ -65,11 +65,21 @@ module.exports = function createWindow(options) {
     }
   }
 
+  function isThisWindowEvent(ev) {
+    return ev && ev.sender === win.webContents;
+  }
+
   function onOpenFile(ev, filePath) {
-    if (ev.sender === win.webContents) {
+    if (isThisWindowEvent(ev)) {
       createWindow(Object.assign({}, windowOptions, {
         filePath,
       }));
+    }
+  }
+
+  function onOpenFileDialog(ev) {
+    if (isThisWindowEvent(ev)) {
+      windowOptions.handlers.openFileDialog(win);
     }
   }
 
@@ -79,6 +89,7 @@ module.exports = function createWindow(options) {
     }
 
     ipcMain.removeListener('open-file', onOpenFile);
+    ipcMain.removeListener('open-file-dialog', onOpenFileDialog);
   }
 
   function sendMarkdown() {
@@ -189,6 +200,7 @@ module.exports = function createWindow(options) {
   }
 
   ipcMain.on('open-file', onOpenFile);
+  ipcMain.on('open-file-dialog', onOpenFileDialog);
 
   sharedState.subscribe(() => {
     if (!win) {

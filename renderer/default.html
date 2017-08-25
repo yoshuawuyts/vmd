@@ -30,6 +30,11 @@
     left: 10%;
     top: 50%;
     transform: translateY(-50%);
+    cursor: pointer;
+  }
+
+  .welcome-page > * {
+    pointer-events: none;
   }
 
   .logo {
@@ -65,6 +70,11 @@
   .instructions .dnd {
     color: rgba(33, 33, 33, 1);
   }
+
+  .instructions .trigger {
+    text-decoration: underline;
+  }
+
 </style>
 
 <div class="welcome-page">
@@ -74,6 +84,6 @@
 
   <div class="instructions">
     <p>Welcome to <a href="https://github.com/yoshuawuyts/vmd">vmd</a>.</p>
-    <p>Open a Markdown file through the menu or <span class="dnd">drag and drop</span> a file to open it.</p>
+    <p><span class="trigger">Open</span> a Markdown file through the menu or <span class="dnd">drag and drop</span> a file to open it.</p>
   </div>
 </div>
