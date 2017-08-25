@@ -127,7 +127,7 @@ function openFileDialog(win, openInNewWindow) {
         extensions: markdownExtensions,
       },
       {
-        name: 'Al files',
+        name: 'All files',
         extensions: ['*'],
       },
     ],
