@@ -1,3 +1,5 @@
+/* eslint-disable no-use-before-define */
+
 const fs = require('fs');
 const path = require('path');
 const url = require('url');
@@ -102,24 +104,13 @@ function createWindowOptions(loadFromFile, fileOrContent) {
   return windowOptions;
 }
 
-function registerEmojiProtocol() {
-  const emojiPath = path.resolve(path.dirname(require.resolve('emojify.js')), '..', 'images', 'basic');
+function openFileInReader(win, file, openInNewWindow) {
+  if (!openInNewWindow) {
+    sharedState.setFilePath(win.id, file);
+    return;
+  }
 
-  protocol.registerFileProtocol(
-    'emoji',
-    (req, callback) => {
-      const emoji = url.parse(req.url).hostname;
-      // eslint-disable-next-line standard/no-callback-literal
-      callback({
-        path: path.join(emojiPath, `${emoji}.png`),
-      });
-    },
-    (err) => {
-      if (err) {
-        console.error('failed to register protocol');
-      }
-    },
-  );
+  createWindow(createWindowOptions(true, file));
 }
 
 function openFileDialog(win, openInNewWindow) {
@@ -144,14 +135,29 @@ function openFileDialog(win, openInNewWindow) {
         return;
       }
 
-      if (!openInNewWindow) {
-        sharedState.setFilePath(win.id, filePaths[0]);
-        return;
-      }
-
-      createWindow(createWindowOptions(true, filePaths[0]));
+      openFileInReader(win, filePaths[0], openInNewWindow);
     });
   }
+}
+
+function registerEmojiProtocol() {
+  const emojiPath = path.resolve(path.dirname(require.resolve('emojify.js')), '..', 'images', 'basic');
+
+  protocol.registerFileProtocol(
+    'emoji',
+    (req, callback) => {
+      const emoji = url.parse(req.url).hostname;
+      // eslint-disable-next-line standard/no-callback-literal
+      callback({
+        path: path.join(emojiPath, `${emoji}.png`),
+      });
+    },
+    (err) => {
+      if (err) {
+        console.error('failed to register protocol');
+      }
+    },
+  );
 }
 
 function addApplicationMenu() {
