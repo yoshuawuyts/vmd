@@ -1,6 +1,6 @@
 {
   "name": "vmd",
-  "version": "1.31.0",
+  "version": "1.31.1",
   "description": "Preview markdown files",
   "main": "main/main.js",
   "scripts": {
