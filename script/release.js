@@ -180,7 +180,8 @@ function createRelease(assets) {
   });
 }
 
-function publishRelease(release) {
+function publishRelease(releases) {
+  const release = releases[0];
   const options = {
     uri: release.draft.url,
     headers: {
