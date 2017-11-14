@@ -6,3 +6,5 @@ highlight:
 window:
   preservestate: true
   autohidemenubar: false
+ignorefrontmatter:
+  - yaml

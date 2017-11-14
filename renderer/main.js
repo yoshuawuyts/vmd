@@ -313,7 +313,7 @@ vmd.onContent((ev, data) => {
       mdBody = document.querySelector('.markdown-body');
     }
 
-    renderMarkdown(data.contents, (err, file) => {
+    renderMarkdown(data.contents, conf, (err, file) => {
       if (err) {
         console.error(err);
       }

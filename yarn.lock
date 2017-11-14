@@ -801,6 +801,12 @@ fast-levenshtein@~2.0.4:
   version "2.0.6"
   resolved "https://registry.yarnpkg.com/fast-levenshtein/-/fast-levenshtein-2.0.6.tgz#3d8a5c66883a16a30ca8643e851f19baa7797917"
 
+fault@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/fault/-/fault-1.0.1.tgz#de8d350dfd48be24b5dc1b02867e0871b9135092"
+  dependencies:
+    format "^0.2.2"
+
 fd-slicer@~1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/fd-slicer/-/fd-slicer-1.0.1.tgz#8b5bcbd9ec327c5041bf9ab023fd6750f1177e65"
@@ -881,6 +887,10 @@ form-data@~2.1.1:
     asynckit "^0.4.0"
     combined-stream "^1.0.5"
     mime-types "^2.1.12"
+
+format@^0.2.2:
+  version "0.2.2"
+  resolved "https://registry.yarnpkg.com/format/-/format-0.2.2.tgz#d6170107e9efdc4ed30c9dc39016df942b5cb58b"
 
 fs-extra@0.26.7:
   version "0.26.7"
@@ -2158,6 +2168,13 @@ remark-emoji-to-gemoji@^1.1.0:
     escape-string-regexp "^1.0.5"
     gemoji "^4.0.0"
     unist-util-visit "^1.0.0"
+
+remark-frontmatter@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/remark-frontmatter/-/remark-frontmatter-1.1.0.tgz#9d23c2b376f56617bdb5c5560f1b56e45b19788b"
+  dependencies:
+    fault "^1.0.1"
+    xtend "^4.0.1"
 
 remark-highlight.js@5.0.0:
   version "5.0.0"

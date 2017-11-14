@@ -147,6 +147,8 @@ $ gh-rtfm substack/node-browserify | vmd
  - `--window-autohidemenubar=true`: By default vmd always shows the menu bar.
    To hide it set this flag to `true`. The menu visibility can be toggled using
    the `Alt` key. Linux and Windows only.
+ - `--ignorefrontmatter={format1, format2}`: By default vmd ignores `yaml` frontmatter.
+   You can configure it to ignore other formats supported by [remark-frontmatter](https://github.com/wooorm/remark-frontmatter).
 
 ## Configuration
 
@@ -173,7 +175,7 @@ values in the configuration file. So `--zoom=1.5` will set the zoom factor to
 
 ## Authors
 
-[Max Kueng](https://github.com/maxkueng), [Yoshua Wuyts](https://github.com/yoshuawuyts) 
+[Max Kueng](https://github.com/maxkueng), [Yoshua Wuyts](https://github.com/yoshuawuyts)
 and [contributors](https://github.com/yoshuawuyts/vmd/graphs/contributors).
 
 ## License

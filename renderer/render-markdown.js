@@ -7,6 +7,7 @@ const emojiToGemoji = require('remark-emoji-to-gemoji');
 const html = require('remark-html');
 const visit = require('unist-util-visit');
 const toString = require('mdast-util-to-string');
+const remarkFrontmatter = require('remark-frontmatter');
 
 const emojiPath = path.resolve(path.dirname(require.resolve('emojify.js')), '..', 'images', 'basic');
 
@@ -164,16 +165,24 @@ function fixCheckListStyles() {
   };
 }
 
-const renderer = remark()
-  .use(emojiToGemoji)
-  .use(gemojiToImages)
-  .use(fixHeadings)
-  .use(fixCheckListStyles)
-  .use(slug)
-  .use([hljs, html], {
-    sanitize: false,
-  });
+function frontmatter(fmts) {
+  if (!fmts.length) {
+    return () => {};
+  }
 
-module.exports = function renderMarkdown(text, callback) {
-  renderer.process(text, callback);
+  return remarkFrontmatter.bind(this)(fmts);
+}
+
+module.exports = function renderMarkdown(text, opts, callback) {
+  remark()
+    .use(emojiToGemoji)
+    .use(gemojiToImages)
+    .use(fixHeadings)
+    .use(fixCheckListStyles)
+    .use(slug)
+    .use(frontmatter, opts.ignorefrontmatter)
+    .use([hljs, html], {
+      sanitize: false,
+    })
+    .process(text, callback);
 };
