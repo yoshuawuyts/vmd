@@ -116,7 +116,7 @@ function gemojiToImages() {
 }
 
 function fixHeadings() {
-  const reg = /^([#]+)\s?(.+)$/;
+  const reg = /^([#]+)\s(.+)$/;
 
   return function transformer(tree) {
     visit(tree, 'paragraph', (node, nodeIndex, parent) => {
