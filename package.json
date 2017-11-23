@@ -54,6 +54,7 @@
     "remark-html": "6.0.1",
     "remark-slug": "^4.2.3",
     "rucola": "^1.1.3",
+    "toml": "^2.3.3",
     "unist-util-visit": "^1.1.3"
   },
   "devDependencies": {

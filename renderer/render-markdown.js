@@ -9,6 +9,7 @@ const visit = require('unist-util-visit');
 const toString = require('mdast-util-to-string');
 const frontmatter = require('remark-frontmatter');
 const yaml = require('js-yaml');
+const toml = require('toml');
 
 const emojiPath = path.resolve(path.dirname(require.resolve('emojify.js')), '..', 'images', 'basic');
 
@@ -226,33 +227,39 @@ function objectToMdastTable(obj) {
 
 function renderFrontMatter() {
   return function transformer(tree) {
-    visit(tree, 'yaml', (node, nodeIndex, parent) => {
-      if (parent.type === 'root' && nodeIndex === 0) {
-        const getNode = () => {
-          try {
-            const doc = yaml.safeLoad(node.value);
-            return objectToMdastTable(doc);
-          } catch (err) {
-            return {
-              type: 'code',
-              lang: 'yaml',
-              value: node.value,
-              data: {
-                hProperties: {
-                  title: err.message || err,
+    const visitor = (format, parse) => {
+      visit(tree, format, (node, nodeIndex, parent) => {
+        if (parent.type === 'root' && nodeIndex === 0) {
+          const getNode = () => {
+            try {
+              const doc = parse(node.value);
+              console.log(doc);
+              return objectToMdastTable(doc);
+            } catch (err) {
+              return {
+                type: 'code',
+                lang: 'toml',
+                value: node.value,
+                data: {
+                  hProperties: {
+                    title: err.message || err,
+                  },
                 },
-              },
-            };
-          }
-        };
+              };
+            }
+          };
 
-        // eslint-disable-next-line no-param-reassign
-        parent.children = [].concat(
-          [getNode()],
-          parent.children.slice(nodeIndex + 1),
-        );
-      }
-    });
+          // eslint-disable-next-line no-param-reassign
+          parent.children = [].concat(
+            [getNode()],
+            parent.children.slice(nodeIndex + 1),
+          );
+        }
+      });
+    };
+
+    visitor('yaml', yaml.safeLoad);
+    visitor('toml', toml.parse);
   };
 }
 

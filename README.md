@@ -152,7 +152,8 @@ $ gh-rtfm substack/node-browserify | vmd
    the `Alt` key. Linux and Windows only.
 
  - `--frontmatter-fromats=FORMATS`: A comma-separated list of Front Matter
-   formats. By default only the YAML format is enabled.
+   formats. By default only the YAML format is enabled. Supported formats are
+   YAML, TOML.
 
 ## Configuration
 
