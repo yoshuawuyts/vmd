@@ -57,6 +57,9 @@ same as on GitHub.
    make vmd look the way you want. Take a look at the [Options](#options) for
    an overview of available customization options.
 
+ - **Front Matter**: Renders [Front Matter][frontmatter] so you can preview
+   your Jekyll and Hugo content in vmd.
+
 ## Installation
 
 ```bash
@@ -147,8 +150,9 @@ $ gh-rtfm substack/node-browserify | vmd
  - `--window-autohidemenubar=true`: By default vmd always shows the menu bar.
    To hide it set this flag to `true`. The menu visibility can be toggled using
    the `Alt` key. Linux and Windows only.
- - `--ignorefrontmatter={format1, format2}`: By default vmd ignores `yaml` frontmatter.
-   You can configure it to ignore other formats supported by [remark-frontmatter](https://github.com/wooorm/remark-frontmatter).
+
+ - `--frontmatter-fromats=FORMATS`: A comma-separated list of Front Matter
+   formats. By default only the YAML format is enabled.
 
 ## Configuration
 
@@ -191,3 +195,4 @@ and [contributors](https://github.com/yoshuawuyts/vmd/graphs/contributors).
 [emoji-cheat-sheet]: http://www.emoji-cheat-sheet.com/
 [codacy-image]: https://img.shields.io/codacy/grade/ccaa489b6f664ebd9a12d900334be10f/master.svg?style=flat-square
 [codacy-url]: https://www.codacy.com/app/maxkueng/vmd?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=yoshuawuyts/vmd&amp;utm_campaign=Badge_Grade
+[frontmatter]: https://jekyllrb.com/docs/frontmatter/
