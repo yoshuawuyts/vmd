@@ -233,7 +233,6 @@ function renderFrontMatter() {
           const getNode = () => {
             try {
               const doc = parse(node.value);
-              console.log(doc);
               return objectToMdastTable(doc);
             } catch (err) {
               return {
