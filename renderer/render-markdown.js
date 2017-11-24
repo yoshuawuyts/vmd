@@ -7,7 +7,9 @@ const emojiToGemoji = require('remark-emoji-to-gemoji');
 const html = require('remark-html');
 const visit = require('unist-util-visit');
 const toString = require('mdast-util-to-string');
-const remarkFrontmatter = require('remark-frontmatter');
+const frontmatter = require('remark-frontmatter');
+const yaml = require('js-yaml');
+const toml = require('toml');
 
 const emojiPath = path.resolve(path.dirname(require.resolve('emojify.js')), '..', 'images', 'basic');
 
@@ -165,22 +167,129 @@ function fixCheckListStyles() {
   };
 }
 
-function frontmatter(fmts) {
-  if (!fmts.length) {
-    return () => {};
+function objectToMdastTable(obj) {
+  const isObject = Object.prototype.toString.call(obj) === '[object Object]';
+  const isArray = Array.isArray(obj);
+
+  if (!isObject && !isArray) {
+    return {
+      type: 'text',
+      value: String(obj),
+    };
   }
 
-  return remarkFrontmatter.bind(this)(fmts);
+  const createTable = (columnCount, children) => ({
+    type: 'table',
+    data: {
+      hProperties: {
+        className: 'frontmatter',
+      },
+    },
+    align: new Array(columnCount).fill('center'),
+    children,
+  });
+
+  const createRow = children => ({
+    type: 'tableRow',
+    children,
+  });
+
+  const createCell = (nodeType, value) => ({
+    type: 'tableCell',
+    data: {
+      hName: nodeType,
+    },
+    children: [
+      value,
+    ],
+  });
+
+  if (isObject) {
+    const head = Object.keys(obj).map(key => createCell('th', {
+      type: 'text',
+      value: key,
+    }));
+
+    const body = Object.keys(obj).map(key => createCell('td', objectToMdastTable(obj[key])));
+
+    return createTable(head.length, [
+      createRow(head),
+      createRow(body),
+    ]);
+  }
+
+  const body = obj.map(value => createCell('td', objectToMdastTable(value)));
+
+  return createTable(body.length, [
+    createRow(body),
+  ]);
 }
 
-module.exports = function renderMarkdown(text, opts, callback) {
+function renderFrontMatter(renderMode) {
+  return function transformer(tree) {
+    const visitor = (format, parse) => {
+      visit(tree, format, (node, nodeIndex, parent) => {
+        if (parent.type === 'root' && nodeIndex === 0) {
+          const getNodes = () => {
+            try {
+              switch (renderMode) {
+                case 'none':
+                  return [];
+                case 'code':
+                  return [{
+                    type: 'code',
+                    lang: format,
+                    value: node.value,
+                  }];
+                case 'table':
+                  return [
+                    objectToMdastTable(parse(node.value)),
+                  ];
+                default:
+                  throw new Error(`Unknown Front Matter render mode: ${renderMode}`);
+              }
+            } catch (err) {
+              return [{
+                type: 'code',
+                lang: 'toml',
+                value: node.value,
+                data: {
+                  hProperties: {
+                    title: err.message || err,
+                  },
+                },
+              }];
+            }
+          };
+
+          // eslint-disable-next-line no-param-reassign
+          parent.children = [].concat(
+            getNodes(),
+            parent.children.slice(nodeIndex + 1),
+          );
+        }
+      });
+    };
+
+    visitor('yaml', yaml.safeLoad);
+    visitor('toml', toml.parse);
+  };
+}
+
+module.exports = function renderMarkdown(text, config, callback) {
+  const frontMatterRenderer = config.get('frontmatter.renderer');
+  const frontMatters = config.get('frontmatter.formats')
+    .split(',')
+    .map(format => format.toLowerCase());
+
   remark()
     .use(emojiToGemoji)
     .use(gemojiToImages)
     .use(fixHeadings)
     .use(fixCheckListStyles)
     .use(slug)
-    .use(frontmatter, opts.ignorefrontmatter)
+    .use(frontmatter, frontMatters)
+    .use(() => renderFrontMatter(frontMatterRenderer))
     .use([hljs, html], {
       sanitize: false,
     })

@@ -6,5 +6,6 @@ highlight:
 window:
   preservestate: true
   autohidemenubar: false
-ignorefrontmatter:
-  - yaml
+frontmatter:
+  formats: yaml
+  renderer: table
