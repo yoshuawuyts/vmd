@@ -8,3 +8,4 @@ window:
   autohidemenubar: false
 frontmatter:
   formats: yaml
+  renderer: table

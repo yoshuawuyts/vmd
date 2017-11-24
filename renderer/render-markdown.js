@@ -225,17 +225,31 @@ function objectToMdastTable(obj) {
   ]);
 }
 
-function renderFrontMatter() {
+function renderFrontMatter(renderMode) {
   return function transformer(tree) {
     const visitor = (format, parse) => {
       visit(tree, format, (node, nodeIndex, parent) => {
         if (parent.type === 'root' && nodeIndex === 0) {
-          const getNode = () => {
+          const getNodes = () => {
             try {
-              const doc = parse(node.value);
-              return objectToMdastTable(doc);
+              switch (renderMode) {
+                case 'none':
+                  return [];
+                case 'code':
+                  return [{
+                    type: 'code',
+                    lang: format,
+                    value: node.value,
+                  }];
+                case 'table':
+                  return [
+                    objectToMdastTable(parse(node.value)),
+                  ];
+                default:
+                  throw new Error(`Unknown Front Matter render mode: ${renderMode}`);
+              }
             } catch (err) {
-              return {
+              return [{
                 type: 'code',
                 lang: 'toml',
                 value: node.value,
@@ -244,13 +258,13 @@ function renderFrontMatter() {
                     title: err.message || err,
                   },
                 },
-              };
+              }];
             }
           };
 
           // eslint-disable-next-line no-param-reassign
           parent.children = [].concat(
-            [getNode()],
+            getNodes(),
             parent.children.slice(nodeIndex + 1),
           );
         }
@@ -263,6 +277,7 @@ function renderFrontMatter() {
 }
 
 module.exports = function renderMarkdown(text, config, callback) {
+  const frontMatterRenderer = config.get('frontmatter.renderer');
   const frontMatters = config.get('frontmatter.formats')
     .split(',')
     .map(format => format.toLowerCase());
@@ -274,7 +289,7 @@ module.exports = function renderMarkdown(text, config, callback) {
     .use(fixCheckListStyles)
     .use(slug)
     .use(frontmatter, frontMatters)
-    .use(renderFrontMatter)
+    .use(() => renderFrontMatter(frontMatterRenderer))
     .use([hljs, html], {
       sanitize: false,
     })

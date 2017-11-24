@@ -155,6 +155,10 @@ $ gh-rtfm substack/node-browserify | vmd
    formats. By default only the YAML format is enabled. Supported formats are
    YAML, TOML.
 
+ - `--frontmatter-renderer=RENDERER`: Specify how to render Front Matter. Can
+   be “table”, “code” or “none”. If “none” is specified the Front Matter will
+   not be rendered at all. Default is “table”.
+
 ## Configuration
 
 All [Options](#options) that contain a value can be persisted in configuration
