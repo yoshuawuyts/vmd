@@ -7,6 +7,7 @@ const {
   app,
   dialog,
   protocol,
+  shell,
   Menu,
 } = require('electron');
 const getStdin = require('get-stdin');
@@ -140,6 +141,11 @@ function openFileDialog(win, openInNewWindow) {
   }
 }
 
+function openAboutDialog(win) {
+  const readmePath = path.resolve(__dirname, '..', 'README.md');
+  openFileInReader(win, readmePath, true);
+}
+
 function registerEmojiProtocol() {
   const emojiPath = path.resolve(path.dirname(require.resolve('emojify.js')), '..', 'images', 'basic');
 
@@ -161,164 +167,229 @@ function registerEmojiProtocol() {
 }
 
 function addApplicationMenu() {
-  // menu
-  let vmdSubmenu = [
-    {
-      label: 'Close window',
-      accelerator: 'CmdOrCtrl+W',
-      role: 'close',
-    },
-    {
-      label: 'Quit',
-      accelerator: 'CmdOrCtrl+Q',
-      click() {
-        app.quit();
-      },
-    },
-  ];
+  function menuLabel(label) {
+    if (process.platform === 'darwin') {
+      return label.replace('&', '');
+    }
+    return label;
+  }
+  const template = [];
 
   if (process.platform === 'darwin') {
-    vmdSubmenu = [
-      {
-        label: 'About vmd',
-        selector: 'orderFrontStandardAboutPanel:',
-      },
-      {
-        type: 'separator',
-      },
-    ].concat(vmdSubmenu);
+    template.push({
+      label: 'vmd',
+      submenu: [
+        {
+          label: 'About vmd',
+          click() {
+            openAboutDialog();
+          },
+        },
+        { type: 'separator' },
+        { role: 'hide' },
+        { role: 'hideothers' },
+        { role: 'unhide' },
+        { type: 'separator' },
+        {
+          label: 'Close window',
+          accelerator: 'CmdOrCtrl+W',
+          role: 'close',
+        },
+        {
+          label: 'Quit',
+          accelerator: 'CmdOrCtrl+Q',
+          click() {
+            app.quit();
+          },
+        },
+      ],
+    });
   }
 
-  // Doc: https://github.com/atom/electron/blob/master/docs/api/menu-item.md
-  const template = [
-    {
-      label: 'vmd',
-      submenu: vmdSubmenu,
-    },
-    {
-      label: 'File',
-      submenu: [
-        {
-          label: 'Open',
-          accelerator: 'CmdOrCtrl+O',
-          click(model, item, win) {
-            openFileDialog(win, false);
-          },
+  const fileMenu = {
+    label: menuLabel('&File'),
+    submenu: [
+      {
+        label: menuLabel('&Open'),
+        accelerator: 'CmdOrCtrl+O',
+        click(model, item, win) {
+          openFileDialog(win, false);
         },
-        {
-          label: 'Open in new window',
-          accelerator: 'CmdOrCtrl+Shift+O',
-          click(model, item, win) {
-            openFileDialog(win, true);
-          },
+      },
+      {
+        label: menuLabel('Open in &new window'),
+        accelerator: 'CmdOrCtrl+Shift+O',
+        click(model, item, win) {
+          openFileDialog(win, true);
         },
-        {
-          label: 'Print',
-          accelerator: 'CmdOrCtrl+P',
-          click(model, item, win) {
-            if (win) {
-              win.webContents.send('print');
-            }
-          },
+      },
+      {
+        label: menuLabel('&Print'),
+        accelerator: 'CmdOrCtrl+P',
+        click(model, item, win) {
+          if (win) {
+            win.webContents.send('print');
+          }
         },
-      ],
-    },
-    {
-      label: 'Edit',
-      submenu: [
-        {
-          label: 'Find',
-          accelerator: 'CmdOrCtrl+F',
-          click(model, item, win) {
-            win.webContents.send('find');
-          },
+      },
+    ],
+  };
+
+  if (process.platform !== 'darwin') {
+    fileMenu.submenu = [].concat(fileMenu.submenu, [
+      { type: 'separator' },
+      {
+        label: menuLabel('C&lose window'),
+        accelerator: 'CmdOrCtrl+W',
+        role: 'close',
+      },
+      {
+        label: menuLabel('&Quit'),
+        accelerator: 'CmdOrCtrl+Q',
+        click() {
+          app.quit();
         },
-        {
-          label: 'Copy',
-          accelerator: 'CmdOrCtrl+C',
-          role: 'copy',
-          enabled(model) {
-            return model && !!model.selection;
-          },
+      },
+    ]);
+  }
+
+  template.push(fileMenu);
+
+  template.push({
+    label: menuLabel('&Edit'),
+    submenu: [
+      {
+        label: menuLabel('&Find'),
+        accelerator: 'CmdOrCtrl+F',
+        click(model, item, win) {
+          win.webContents.send('find');
         },
-        {
-          label: 'Select All',
-          accelerator: 'CmdOrCtrl+A',
-          role: 'selectall',
+      },
+      {
+        label: menuLabel('&Copy'),
+        accelerator: 'CmdOrCtrl+C',
+        role: 'copy',
+        enabled(model) {
+          return model && !!model.selection;
         },
-      ],
-    },
-    {
-      label: 'History',
-      submenu: [
-        {
-          label: 'Back',
-          accelerator: 'Alt+Left',
-          click(model, item, win) {
-            if (win) {
-              win.webContents.send('history-back');
-            }
-          },
-          enabled(model) {
-            return model.history && model.history.canGoBack;
-          },
+      },
+      {
+        label: menuLabel('Select &All'),
+        accelerator: 'CmdOrCtrl+A',
+        role: 'selectall',
+      },
+    ],
+  });
+
+  template.push({
+    label: menuLabel('&History'),
+    submenu: [
+      {
+        label: menuLabel('&Back'),
+        accelerator: 'Alt+Left',
+        click(model, item, win) {
+          if (win) {
+            win.webContents.send('history-back');
+          }
         },
-        {
-          label: 'Forward',
-          accelerator: 'Alt+Right',
-          click(model, item, win) {
-            if (win) {
-              win.webContents.send('history-forward');
-            }
-          },
-          enabled(model) {
-            return model.history && model.history.canGoForward;
-          },
+        enabled(model) {
+          return model.history && model.history.canGoBack;
         },
-      ],
-    },
-    {
-      label: 'View',
-      submenu: [
-        {
-          label: 'Zoom In',
-          accelerator: 'CmdOrCtrl+Plus',
-          click(model, item, win) {
-            if (win) {
-              win.webContents.send('zoom-in');
-            }
-          },
+      },
+      {
+        label: menuLabel('&Forward'),
+        accelerator: 'Alt+Right',
+        click(model, item, win) {
+          if (win) {
+            win.webContents.send('history-forward');
+          }
         },
-        {
-          label: 'Zoom Out',
-          accelerator: 'CmdOrCtrl+-',
-          click(model, item, win) {
-            if (win) {
-              win.webContents.send('zoom-out');
-            }
-          },
+        enabled(model) {
+          return model.history && model.history.canGoForward;
         },
-        {
-          label: 'Reset Zoom',
-          accelerator: 'CmdOrCtrl+0',
-          click(model, item, win) {
-            if (win) {
-              win.webContents.send('zoom-reset');
-            }
-          },
+      },
+    ],
+  });
+
+  template.push({
+    label: menuLabel('&View'),
+    submenu: [
+      {
+        label: menuLabel('Zoom &In'),
+        accelerator: 'CmdOrCtrl+Plus',
+        click(model, item, win) {
+          if (win) {
+            win.webContents.send('zoom-in');
+          }
         },
-        {
-          label: 'Toggle Developer Tools',
-          accelerator: process.platform === 'darwin' ? 'Alt+Command+I' : 'Ctrl+Shift+I',
-          click(model, item, win) {
-            if (win) {
-              win.toggleDevTools();
-            }
-          },
+      },
+      {
+        label: menuLabel('Zoom &Out'),
+        accelerator: 'CmdOrCtrl+-',
+        click(model, item, win) {
+          if (win) {
+            win.webContents.send('zoom-out');
+          }
         },
-      ],
-    },
-  ];
+      },
+      {
+        label: menuLabel('&Reset Zoom'),
+        accelerator: 'CmdOrCtrl+0',
+        click(model, item, win) {
+          if (win) {
+            win.webContents.send('zoom-reset');
+          }
+        },
+      },
+      {
+        label: menuLabel('Toggle &Developer Tools'),
+        accelerator: process.platform === 'darwin' ? 'Alt+Command+I' : 'Ctrl+Shift+I',
+        click(model, item, win) {
+          if (win) {
+            win.toggleDevTools();
+          }
+        },
+      },
+    ],
+  });
+
+  const helpMenu = {
+    label: menuLabel('He&lp'),
+    submenu: [
+      {
+        label: menuLabel('S&ource Code'),
+        click() {
+          shell.openExternal('https://github.com/yoshuawuyts/vmd');
+        },
+      },
+      {
+        label: menuLabel('Report an &Issue'),
+        click() {
+          shell.openExternal('https://github.com/yoshuawuyts/vmd/issues');
+        },
+      },
+      {
+        label: menuLabel('&Releases'),
+        click() {
+          shell.openExternal('https://github.com/yoshuawuyts/vmd/releases');
+        },
+      },
+    ],
+  };
+
+  if (process.platform !== 'darwin') {
+    helpMenu.submenu = [].concat(helpMenu.submenu, [
+      { type: 'separator' },
+      {
+        label: menuLabel('&About vmd'),
+        click() {
+          openAboutDialog();
+        },
+      },
+    ]);
+  }
+
+  template.push(helpMenu);
 
   const menu = createMenu(template, {});
 
