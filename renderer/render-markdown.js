@@ -6,7 +6,6 @@ const hljs = require('remark-highlight.js');
 const emojiToGemoji = require('remark-emoji-to-gemoji');
 const html = require('remark-html');
 const visit = require('unist-util-visit');
-const toString = require('mdast-util-to-string');
 const frontmatter = require('remark-frontmatter');
 const yaml = require('js-yaml');
 const toml = require('toml');
@@ -113,34 +112,6 @@ function gemojiToImages() {
         nodes,
         afterNodes,
       );
-    });
-  };
-}
-
-function fixHeadings() {
-  const reg = /^([#]+)\s(.+)$/;
-
-  return function transformer(tree) {
-    visit(tree, 'paragraph', (node, nodeIndex, parent) => {
-      const nodeText = toString(node);
-      if (parent.type === 'root' && reg.test(nodeText)) {
-        const nodeTextParts = reg.exec(nodeText);
-        /* eslint-disable no-param-reassign */
-        node.type = 'heading';
-        node.depth = nodeTextParts[1].length;
-
-        node.children = [].concat(node.children)
-          .map((child, index) => {
-            if (child.type === 'text' && index === 0) {
-              return Object.assign({}, child, {
-                value: nodeTextParts[2],
-              });
-            }
-
-            return child;
-          });
-        /* eslint-enable no-param-reassign */
-      }
     });
   };
 }
@@ -285,7 +256,6 @@ module.exports = function renderMarkdown(text, config, callback) {
   remark()
     .use(emojiToGemoji)
     .use(gemojiToImages)
-    .use(fixHeadings)
     .use(fixCheckListStyles)
     .use(slug)
     .use(frontmatter, frontMatters)

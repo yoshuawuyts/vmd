@@ -42,7 +42,6 @@
     "github-markdown-css": "^2.8.0",
     "js-yaml": "^3.10.0",
     "lodash.template": "^4.4.0",
-    "mdast-util-to-string": "^1.0.4",
     "minimist": "^1.2.0",
     "postcss": "6.0.8",
     "postcss-safe-important": "^1.0.4",
