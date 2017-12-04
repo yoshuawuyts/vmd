@@ -330,7 +330,14 @@ window.addEventListener('click', (ev) => {
 window.addEventListener('keydown', (ev) => {
   const esc = ev.keyCode === 27;
 
-  if (esc) currentWindow.close();
+  if (esc) {
+    if (inPageSearch && inPageSearch.opened) {
+      inPageSearch.closeSearchWindow();
+      return;
+    }
+
+    currentWindow.close();
+  }
 });
 
 window.addEventListener('mouseup', () => {
