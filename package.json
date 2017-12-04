@@ -48,7 +48,7 @@
     "redux": "^3.7.2",
     "remark": "8.0.0",
     "remark-emoji-to-gemoji": "^1.1.0",
-    "remark-frontmatter": "^1.1.0",
+    "remark-frontmatter": "1.2.0",
     "remark-highlight.js": "5.0.0",
     "remark-html": "6.0.1",
     "remark-slug": "^4.2.3",

@@ -244,14 +244,34 @@ function renderFrontMatter(renderMode) {
 
     visitor('yaml', yaml.safeLoad);
     visitor('toml', toml.parse);
+    visitor('json', value => JSON.parse(`{${value}}`));
   };
 }
 
 module.exports = function renderMarkdown(text, config, callback) {
   const frontMatterRenderer = config.get('frontmatter.renderer');
-  const frontMatters = config.get('frontmatter.formats')
+
+  const enabledFrontMatters = config.get('frontmatter.formats')
     .split(',')
     .map(format => format.toLowerCase());
+
+  const frontMatters = [
+    {
+      type: 'yaml',
+      marker: '-',
+    },
+    {
+      type: 'toml',
+      marker: '+',
+    },
+    {
+      type: 'json',
+      fence: {
+        open: '{',
+        close: '}',
+      },
+    },
+  ].filter(matter => enabledFrontMatters.includes(matter.type));
 
   remark()
     .use(emojiToGemoji)

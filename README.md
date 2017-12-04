@@ -57,8 +57,9 @@ same as on GitHub.
    make vmd look the way you want. Take a look at the [Options](#options) for
    an overview of available customization options.
 
- - **Front Matter**: Renders [Front Matter][frontmatter] so you can preview
-   your Jekyll and Hugo content in vmd.
+ - **Front Matter**: Renders [Front Matter][frontmatter] in YAML and, if
+   enabled, in TOML and JSON so you can preview your Jekyll and Hugo content in
+   vmd. See some [examples][hugo-frontmatter].
 
 ## Installation
 
@@ -153,7 +154,7 @@ $ gh-rtfm substack/node-browserify | vmd
 
  - `--frontmatter-fromats=FORMATS`: A comma-separated list of Front Matter
    formats. By default only the YAML format is enabled. Supported formats are
-   YAML, TOML.
+   YAML, TOML and JSON.
 
  - `--frontmatter-renderer=RENDERER`: Specify how to render Front Matter. Can
    be “table”, “code” or “none”. If “none” is specified the Front Matter will
@@ -201,3 +202,4 @@ and [contributors](https://github.com/yoshuawuyts/vmd/graphs/contributors).
 [codacy-image]: https://img.shields.io/codacy/grade/ccaa489b6f664ebd9a12d900334be10f/master.svg?style=flat-square
 [codacy-url]: https://www.codacy.com/app/maxkueng/vmd?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=yoshuawuyts/vmd&amp;utm_campaign=Badge_Grade
 [frontmatter]: https://jekyllrb.com/docs/frontmatter/
+[hugo-frontmatter]: https://gohugo.io/content-management/front-matter/
