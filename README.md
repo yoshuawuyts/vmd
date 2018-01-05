@@ -152,7 +152,7 @@ $ gh-rtfm substack/node-browserify | vmd
    To hide it set this flag to `true`. The menu visibility can be toggled using
    the `Alt` key. Linux and Windows only.
 
- - `--frontmatter-fromats=FORMATS`: A comma-separated list of Front Matter
+ - `--frontmatter-formats=FORMATS`: A comma-separated list of Front Matter
    formats. By default only the YAML format is enabled. Supported formats are
    YAML, TOML and JSON.
 
