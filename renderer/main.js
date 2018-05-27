@@ -1,13 +1,15 @@
 /* global vmd:true */
 
-const remote = require('electron').remote;
+const { remote } = require('electron');
 
 const url = remote.require('url');
 const path = remote.require('path');
 const fs = remote.require('fs');
-const shell = remote.shell;
-const clipboard = remote.clipboard;
-const nativeImage = remote.nativeImage;
+const {
+  shell,
+  clipboard,
+  nativeImage,
+} = remote;
 const conf = remote.getGlobal('conf');
 const currentWindow = remote.getCurrentWindow();
 const searchInPage = require('electron-in-page-search').default;
@@ -147,9 +149,11 @@ function getLinkType(el) {
 
   const filePath = document.body.getAttribute('data-filepath');
   const parsedHref = url.parse(href);
-  const hash = parsedHref.hash;
-  const protocol = parsedHref.protocol;
-  const pathname = parsedHref.pathname;
+  const {
+    hash,
+    protocol,
+    pathname,
+  } = parsedHref;
 
   if (protocol && protocol !== 'file:') {
     return {
@@ -285,7 +289,7 @@ vmd.onHistoryForwardAction(() => {
 });
 
 vmd.onContent((ev, data) => {
-  const body = document.body;
+  const { body } = document;
   const pageContent = document.querySelector('.page-content');
   const base = document.querySelector('base');
 

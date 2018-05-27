@@ -1,5 +1,7 @@
-const createStore = require('redux').createStore;
-const combineReducers = require('redux').combineReducers;
+const {
+  createStore,
+  combineReducers,
+} = require('redux');
 const { BrowserWindow } = require('electron');
 
 function focusedWindowAction(action) {

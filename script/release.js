@@ -10,7 +10,7 @@ const request = require('request');
 const promiseRetryer = require('promise-retryer')(Promise);
 
 const token = process.env.GITHUB_ACCESS_TOKEN;
-const version = require('../package').version;
+const { version } = require('../package');
 
 const repo = 'yoshuawuyts/vmd';
 
