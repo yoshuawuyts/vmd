@@ -122,7 +122,7 @@ function patchNode(context, key, value) {
     context[key] = value;
   }
 
-  return context;
+  return context[key];
 }
 
 function fixCheckListStyles() {
@@ -134,6 +134,16 @@ function fixCheckListStyles() {
           className: 'task-list-item',
         });
       }
+    });
+  };
+}
+
+function fixCodeClass() {
+  return function transformer(tree) {
+    visit(tree, 'code', (node) => {
+      const data = patchNode(node, 'data', {});
+      const hProperties = patchNode(data, 'hProperties', {});
+      hProperties.className = ['hljs'];
     });
   };
 }
@@ -277,6 +287,7 @@ module.exports = function renderMarkdown(text, config, callback) {
     .use(emojiToGemoji)
     .use(gemojiToImages)
     .use(fixCheckListStyles)
+    .use(fixCodeClass)
     .use(slug)
     .use(frontmatter, frontMatters)
     .use(() => renderFrontMatter(frontMatterRenderer))

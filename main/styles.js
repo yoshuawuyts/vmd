@@ -2,7 +2,7 @@ const path = require('path');
 const fs = require('fs');
 const { app } = require('electron');
 const postcss = require('postcss');
-const postcssImportant = require('postcss-safe-important');
+const postccsPrefixer = require('postcss-prefix-selector');
 
 exports.getHighlightThemes = function styles() {
   const themesPath = path.resolve(require.resolve('highlight.js'), '../..', 'styles');
@@ -21,7 +21,11 @@ exports.getHighlightTheme = function getHighlightTheme(theme) {
 
   try {
     const themeStyles = fs.readFileSync(themePath, 'utf-8');
-    return postcss(postcssImportant).process(themeStyles).css;
+    return postcss([
+      postccsPrefixer({
+        prefix: '.markdown-body pre',
+      }),
+    ]).process(themeStyles).css;
   } catch (err) {
     console.error('Cannot load theme', `${theme}:`, err.code === 'ENOENT' ? 'no such file' : err.message);
     app.exit(1);

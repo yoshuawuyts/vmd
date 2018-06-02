@@ -2271,11 +2271,11 @@ posix-character-classes@^0.1.0:
   version "0.1.1"
   resolved "https://registry.yarnpkg.com/posix-character-classes/-/posix-character-classes-0.1.1.tgz#01eac0fe3b5af71a2a6c02feabb8c1fef7e00eab"
 
-postcss-safe-important@^1.0.4:
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/postcss-safe-important/-/postcss-safe-important-1.1.0.tgz#6ac6841b0a42ba3634167c589b107a54dc03203f"
+postcss-prefix-selector@^1.6.0:
+  version "1.6.0"
+  resolved "https://registry.yarnpkg.com/postcss-prefix-selector/-/postcss-prefix-selector-1.6.0.tgz#b495949d639c63147145648326853216f3c10900"
   dependencies:
-    postcss "^5.0.10"
+    postcss "^5.0.8"
 
 postcss@6.0.22:
   version "6.0.22"
@@ -2285,7 +2285,7 @@ postcss@6.0.22:
     source-map "^0.6.1"
     supports-color "^5.4.0"
 
-postcss@^5.0.10:
+postcss@^5.0.8:
   version "5.2.18"
   resolved "https://registry.yarnpkg.com/postcss/-/postcss-5.2.18.tgz#badfa1497d46244f6390f58b319830d9107853c5"
   dependencies:
