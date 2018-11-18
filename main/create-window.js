@@ -7,9 +7,9 @@ const {
 } = require('electron');
 const template = require('lodash.template');
 const chokidar = require('chokidar');
+const windowStateKeeper = require('electron-window-state');
 const sharedState = require('../shared/shared-state');
 const styles = require('./styles');
-const windowStateKeeper = require('electron-window-state');
 
 const defaultOptions = {
   width: 800,
@@ -53,9 +53,8 @@ module.exports = function createWindow(options) {
   });
 
   function updateTitle() {
-    const prefix =
-      windowOptions.title ||
-      (fromFile && (path.basename(windowOptions.filePath)));
+    const prefix = windowOptions.title
+      || (fromFile && (path.basename(windowOptions.filePath)));
 
     win.setTitle(prefix ? `${prefix} - vmd` : 'vmd');
 

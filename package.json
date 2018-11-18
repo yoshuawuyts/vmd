@@ -6,8 +6,8 @@
   "scripts": {
     "start": "electron main/main.js --not-packaged=true",
     "dev": "electron main/main.js --not-packaged=true --debug=true",
-    "lint": "eslint **/*.js",
-    "lint:fix": "eslint --fix **/*.js",
+    "lint": "eslint .",
+    "lint:fix": "eslint --fix .",
     "test": "npm run lint",
     "pack-linux-ia32": "electron-packager . --asar --overwrite --platform=linux --arch=ia32 --icon=assets/app-icon/png/64.png --prune=true --out=build",
     "pack-linux-x64": "electron-packager . --asar --overwrite --platform=linux --arch=x64 --icon=assets/app-icon/png/64.png --prune=true --out=build",
@@ -57,11 +57,11 @@
     "unist-util-visit": "^1.4.0"
   },
   "devDependencies": {
-    "electron-packager": "12.1.0",
-    "eslint": "4.19.1",
-    "eslint-config-airbnb-base": "12.1.0",
-    "eslint-plugin-import": "2.12.0",
+    "electron-packager": "^12.2.0",
+    "eslint": "^5.9.0",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-plugin-import": "^2.14.0",
     "promise-retryer": "^0.0.1",
-    "request": "2.87.0"
+    "request": "^2.88.0"
   }
 }
