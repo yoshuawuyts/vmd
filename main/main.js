@@ -405,7 +405,7 @@ app.on('window-all-closed', () => {
   app.quit();
 });
 
-app.on('ready', () => {
+app.once('ready', () => {
   registerEmojiProtocol();
   addApplicationMenu();
 
